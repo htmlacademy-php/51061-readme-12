@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Андрей Гладков](https://up.htmlacademy.ru/php/12/user/51061).
-* Наставник: [Михаил Куклин](https://htmlacademy.ru/profile/k_m_k).
+* Наставник: [Кирилл Морозов](https://htmlacademy.ru/profile/k_m_k).
 
 ---
 
