@@ -264,3 +264,63 @@ function generate_random_date($index)
 
     return $dt;
 }
+
+/**
+ * текст, если его длина меньше заданного числа(по умолчанию 300) символов. В противном случае это должен быть урезанный текст с прибавленной к нему ссылкой.
+ * @param string $text строка
+ * @param int $length допустимая длинна
+ * @return bool
+ */
+function is_need_trunc(string $text, int $length = 300): bool
+{
+    return mb_strlen($text) > $length;
+}
+
+/**
+ * обрезает текст более заданного числа(по умолчанию 300) символов. дополняется  прибавлением к нему "...".
+ * @param string $text строка
+ * @param int $length допустимая длинна
+ * @return string обрезанный текст с ... | исходный
+ */
+function trunc_text(string $text, int $length = 300): string
+{
+    $words_array = explode(' ', $text);
+
+    $last_word_index = false;
+    $symbol_count = 0;
+
+    foreach ($words_array as $i => $word) {
+        if ($words_array[$i + 1]) {
+            // если не последнее слово увеличиваем кол-во на 1( пробел между строками)
+            $symbol_count++;
+        }
+        $symbol_count = $symbol_count + mb_strlen($word);
+        if ($symbol_count > $length) {
+            $last_word_index = $i - 1;
+            break;
+        }
+    }
+
+    $output_array = array_slice($words_array, 0, $last_word_index);
+    $output_string = implode(' ', $output_array) . "...";
+    return $output_string;
+}
+
+/**
+ * если текст больше length обрезает его и прибавляет ссылку Читать далее, выводит текст в p
+ * @param string $text строка
+ * @param int $length допустимая длинна
+ * @param string $full_content_link ссылка на полную версию поста
+ * @return string html
+ */
+function short_content(string $text, int $length = 300, string $full_content_link = "#"): string
+{
+    $output = is_need_trunc($text, $length)
+        ? '<p>' . trunc_text(
+            $text,
+            $length
+        ) . '</p><a class="post-text__more-link" href=' . $full_content_link . '>Читать далее</a>'
+        : '<p>' . $text . '</p>';
+
+    return $output;
+}
