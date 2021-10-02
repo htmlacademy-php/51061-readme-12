@@ -286,7 +286,7 @@ function trunc_text(string $text, int $length = 300): string
 {
     $words_array = explode(' ', $text);
 
-    $last_word_index = false;
+    $last_word_index = 0;
     $symbol_count = 0;
 
     foreach ($words_array as $i => $word) {
