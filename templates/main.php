@@ -95,34 +95,36 @@
         <?php foreach ($posts as $post): ?>
             <article class="popular__post post <?= $post['type'] ?>">
                 <header class="post__header">
-                    <h2><?= $post['title'] ?></h2>
+                    <h2><?= htmlspecialchars($post['title']) ?></h2>
                 </header>
                 <div class="post__main">
+                    <?php $safeTitle = htmlspecialchars($post['title']); ?>
+                    <?php $safeContent = htmlspecialchars($post['content']); ?>
                     <?php switch ($post['type']) {
                         case "post-link":
                             print(include_template('post/link.php', [
-                                'title' => $post['title'],
-                                'content' => $post['content']
+                                'title' => $safeTitle,
+                                'content' => $safeContent
                             ]));
                             break;
                         case "post-text":
                             print(include_template('post/text.php', [
-                                'content' => $post['content']
+                                'content' =>  $safeContent
                             ]));
                             break;
                         case "post-video":
                             print(include_template('post/video.php', [
-                                'content' => $post['content']
+                                'content' =>  $safeContent
                             ]));
                             break;
                         case "post-photo":
                             print(include_template('post/photo.php', [
-                                'content' => $post['content']
+                                'content' =>  $safeContent
                             ]));
                             break;
                         case "post-quote":
                             print(include_template('post/quote.php', [
-                                'content' => $post['content']
+                                'content' => $safeContent
                             ]));
                             break;
                     } ?>
@@ -136,7 +138,7 @@
                                      alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?= $post['user_name'] ?></b>
+                                <b class="post__author-name"><?= htmlspecialchars($post['user_name']) ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
