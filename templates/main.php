@@ -109,17 +109,17 @@
                             break;
                         case "post-text":
                             print(include_template('post/text.php', [
-                                'content' =>  $safeContent
+                                'content' => $safeContent
                             ]));
                             break;
                         case "post-video":
                             print(include_template('post/video.php', [
-                                'content' =>  $safeContent
+                                'content' => $safeContent
                             ]));
                             break;
                         case "post-photo":
                             print(include_template('post/photo.php', [
-                                'content' =>  $safeContent
+                                'content' => $safeContent
                             ]));
                             break;
                         case "post-quote":
@@ -134,7 +134,7 @@
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
                                 <!--укажите путь к файлу аватара-->
-                                <img class="post__author-avatar" src="img/<?= $post['avatar'] ?>"
+                                <img class="post__author-avatar" src="img/<?= htmlspecialchars($post['avatar']) ?>"
                                      alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
