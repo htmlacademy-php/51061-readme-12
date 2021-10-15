@@ -144,9 +144,8 @@
                                 <time class="post__time" title='<?= date_create($post_date_str)->format('d.m.Y H:i') ?>'
                                       datetime="<?= $post_date_str ?>">
                                     <?php
-                                    $post_date_str = generate_random_date($key);
                                     $passed_time_title = get_passed_time_title(
-                                        generate_random_date($key),
+                                        $post_date_str,
                                         $current_time
                                     );
                                     if ($passed_time_title) {

@@ -306,7 +306,7 @@ function shouldWeShowMonthAgo(int $time): bool
  * Генерирует строку для прошедшего времени с момента(переданного параметром) до настоящего момента
  * в нужном сколнении в адекватном временном интервале (минут,часов, дней и т.д.)
  * @param string $date
- * @param int|null $current_time
+ * @param int|null $current_timestamp
  * @return string|false
  */
 function get_passed_time_title(string $date = '', int $current_timestamp = null)
@@ -355,7 +355,7 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
         $plural_form = get_noun_plural_form($past_time, "месяц", "месяца", "месяцев");
     }
 
-    if ($past_time && $plural_form) {
+    if (isset($past_time) && isset($plural_form)) {
         return $past_time . " " . $plural_form . " назад";
     }
     return false;
