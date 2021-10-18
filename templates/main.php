@@ -1,6 +1,7 @@
 <?php
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
+ * @var $current_time int
  */
 
 ?>
@@ -92,7 +93,7 @@
         </div>
     </div>
     <div class="popular__posts">
-        <?php foreach ($posts as $post): ?>
+        <?php foreach ($posts as $key => $post): ?>
             <article class="popular__post post <?= $post['type'] ?>">
                 <header class="post__header">
                     <h2><?= htmlspecialchars($post['title']) ?></h2>
@@ -139,7 +140,18 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= htmlspecialchars($post['user_name']) ?></b>
-                                <time class="post__time" datetime="">дата</time>
+                                <?php $post_date_str = generate_random_date($key); ?>
+                                <time class="post__time" title='<?= date_create($post_date_str)->format('d.m.Y H:i') ?>'
+                                      datetime="<?= $post_date_str ?>">
+                                    <?php
+                                    $passed_time_title = get_passed_time_title(
+                                        $post_date_str,
+                                        $current_time
+                                    );
+                                    if ($passed_time_title) {
+                                        echo $passed_time_title;
+                                    }
+                                    ?></time>
                             </div>
                         </a>
                     </div>
