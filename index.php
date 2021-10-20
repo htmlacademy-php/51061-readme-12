@@ -2,6 +2,9 @@
 
 require_once('helpers.php');
 
+date_default_timezone_set('Europe/Moscow');
+$current_time = date_create()->getTimestamp();
+
 $is_auth = rand(0, 1);
 $user_name = 'Aндрей';
 $title = 'readme: популярное';
@@ -51,7 +54,7 @@ $posts = [
     ]
 ];
 
-$content = include_template('main.php', ["posts" => $posts]);
+$content = include_template('main.php', compact("posts", "current_time"));
 $page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
 
 print($page);

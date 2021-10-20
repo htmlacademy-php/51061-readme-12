@@ -1,5 +1,14 @@
 <?php
 
+$current_time = date_create();
+$current_timestamp = $current_time->getTimestamp();
+const TIME_POINTS = [
+    "minute" => 60,
+    "hour" => 3600,
+    "day" => 86400,
+    "week" => 604800
+];
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -263,6 +272,86 @@ function generate_random_date($index)
     $dt = date('Y-m-d H:i:s', $ts);
 
     return $dt;
+}
+
+/**
+ * Ряд функций для соответствия интервала времени определенным промежуткам (день, неделя и т.д)
+ * @param int $time
+ * @return bool
+ */
+function shouldWeShowAsHoursAgo(int $time): bool
+{
+    return $time > TIME_POINTS['hour']
+        && $time <= TIME_POINTS['day'];
+}
+
+function shouldWeShowAsDaysAgo(int $time): bool
+{
+    return $time > TIME_POINTS['day']
+        && $time <= TIME_POINTS['week'];
+}
+
+function shouldWeShowAsWeeksAgo(int $time): bool
+{
+    return $time > TIME_POINTS['week']
+        && ($time <= (TIME_POINTS['week'] * 5));
+}
+
+function shouldWeShowMonthAgo(int $time): bool
+{
+    return $time > (TIME_POINTS['week'] * 5);
+}
+
+/**
+ * Генерирует строку для прошедшего времени с момента(переданного параметром) до настоящего момента
+ * в нужном сколнении в адекватном временном интервале (минут,часов, дней и т.д.)
+ * @param string $date
+ * @param int|null $current_timestamp
+ * @return string|false
+ */
+function get_passed_time_title(string $date = '', int $current_timestamp = null)
+{
+    if (!$date) {
+        return false;
+    }
+    if (!$current_timestamp) {
+        $current_timestamp = date_create()->getTimestamp();
+    }
+
+    $post_date = strtotime($date);
+    $diff = $current_timestamp - $post_date;
+
+    switch ($diff) {
+        case ($diff < TIME_POINTS["hour"]): //если до текущего времени прошло меньше 60 минут, то формат будет вида «% минут назад»;
+            $past_time = floor($diff / TIME_POINTS["minute"]);
+            $plural_form = get_noun_plural_form($past_time, "минута", "минуты", "минут");
+            break;
+        case (shouldWeShowAsHoursAgo(
+            $diff
+        )): //если до текущего времени прошло больше 60 минут, но меньше 24 часов, то формат будет вида «% часов назад»;
+            $past_time = floor($diff / TIME_POINTS['hour']);
+            $plural_form = get_noun_plural_form($past_time, "час", "часы", "часов");
+            break;
+        case (shouldWeShowAsDaysAgo($diff))://если до текущего времени прошло больше 24 часов, но меньше 7 дней, то формат будет вида «% дней назад»;
+            $past_time = floor($diff / TIME_POINTS['day']);
+            $plural_form = get_noun_plural_form($past_time, "день", "дня", "дней");
+            break;
+        case (shouldWeShowAsWeeksAgo($diff)): //если до текущего времени прошло больше 7 дней, но меньше 5 недель, то формат будет вида «% недель назад»;
+            $past_time = floor($diff / TIME_POINTS['week']);
+            $plural_form = get_noun_plural_form($past_time, "неделя", "недели", "недель");
+            break;
+        case (shouldWeShowMonthAgo($diff)) :
+            //если до текущего времени прошло больше 5 недель, то формат будет вида «% месяцев назад».
+            $current_date = (new DateTime())->setTimestamp($current_timestamp);
+            $past_time = date_diff($current_date, date_create($date))->format('%m');
+            $plural_form = get_noun_plural_form($past_time, "месяц", "месяца", "месяцев");
+            break;
+    }
+
+    if (isset($past_time) && isset($plural_form)) {
+        return $past_time . " " . $plural_form . " назад";
+    }
+    return false;
 }
 
 /**
