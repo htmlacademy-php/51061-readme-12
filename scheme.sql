@@ -14,15 +14,20 @@ email;
 пароль: хэшированный пароль пользователя;
 аватар: ссылка на загруженный аватар пользователя;
 */
+
+--
+-- В целом не увидел уникальных индексов у полей таблиц (их тут не мало должно быть)
+--
+
 CREATE TABLE users
 (
   id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   email      VARCHAR(320) NOT NULL,
   login      VARCHAR(128) NOT NULL,
-  password   CHAR(255)    NOT NULL,
+  password   VARCHAR(100)    NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  avatar_url VARCHAR(2048)
+  avatar_url VARCHAR(2048) --Ух, не мало символов, но ок), просто не помню как именно мы тут файлы храним
 );
 
 /**
@@ -39,7 +44,6 @@ CREATE TABLE messages
 (
   id           INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   content      TEXT NOT NULL,
   sender_id    INT,
   recipient_id INT,
@@ -56,10 +60,8 @@ CREATE TABLE messages
 CREATE TABLE types
 (
   id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  icon_class VARCHAR(10) NOT NULL,
-  title      VARCHAR(10) NOT NULL
+  icon_class VARCHAR(30) NOT NULL,
+  title      VARCHAR(130) NOT NULL
 );
 /**
 Пост
@@ -85,6 +87,7 @@ CREATE TABLE posts
   update_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   title           VARCHAR(255) NOT NULL,
   text            TEXT,
+  author_quote    VARCHAR(100),
   image_url       VARCHAR(2048),
   video_url       VARCHAR(2048),
   url             VARCHAR(2048),
@@ -141,7 +144,7 @@ CREATE TABLE subscriptions
 (
   author_id    INT,
   subscription INT,
-  PRIMARY KEY (author_id, subscription),
+  PRIMARY KEY (author_id, subscription), -- Оо, необычненько, на практике такое редко увидишь, но это работает
   FOREIGN KEY (author_id) REFERENCES users (id),
   FOREIGN KEY (subscription) REFERENCES users (id)
 );
