@@ -18,7 +18,6 @@ email;
 --
 -- В целом не увидел уникальных индексов у полей таблиц (их тут не мало должно быть)
 --
-
 CREATE TABLE users
 (
   id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -27,8 +26,11 @@ CREATE TABLE users
   password   VARCHAR(100)    NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  avatar_url VARCHAR(2048) --Ух, не мало символов, но ок), просто не помню как именно мы тут файлы храним
+  avatar_url VARCHAR(2048)
 );
+CREATE INDEX i_user_login ON users(login);
+CREATE INDEX i_user_email ON users(email);
+CREATE INDEX i_user_id ON users(id);
 
 /**
 Сообщение
@@ -97,6 +99,10 @@ CREATE TABLE posts
   FOREIGN KEY (author_id) REFERENCES users (id),
   FOREIGN KEY (content_type_id) REFERENCES types (id)
 );
+CREATE INDEX i_post_title ON posts(title);
+CREATE INDEX i_post_author_quote ON posts(author_quote);
+CREATE INDEX i_post_views ON posts(views);
+CREATE INDEX i_post_id ON posts(id);
 /**
 Комментарий
 Текстовый комментарий, оставленный к одному из постов.
@@ -159,6 +165,8 @@ CREATE TABLE hashtags
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   name       VARCHAR(100)
 );
+CREATE INDEX i_hashtag_id ON hashtags(id);
+CREATE INDEX i_hashtag_name ON hashtags(name);
 
 CREATE TABLE post_hashtags
 (
