@@ -28,9 +28,8 @@ CREATE TABLE users
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   avatar_url VARCHAR(2048)
 );
-CREATE INDEX i_user_login ON users(login);
-CREATE INDEX i_user_email ON users(email);
-CREATE INDEX i_user_id ON users(id);
+CREATE UNIQUE INDEX login ON users(login);
+CREATE UNIQUE INDEX email ON users(email);
 
 /**
 Сообщение
@@ -99,10 +98,9 @@ CREATE TABLE posts
   FOREIGN KEY (author_id) REFERENCES users (id),
   FOREIGN KEY (content_type_id) REFERENCES types (id)
 );
-CREATE INDEX i_post_title ON posts(title);
-CREATE INDEX i_post_author_quote ON posts(author_quote);
-CREATE INDEX i_post_views ON posts(views);
-CREATE INDEX i_post_id ON posts(id);
+CREATE UNIQUE INDEX title ON posts(title);
+CREATE UNIQUE INDEX text ON posts(text(20));
+CREATE UNIQUE INDEX author_quote ON posts(author_quote);
 /**
 Комментарий
 Текстовый комментарий, оставленный к одному из постов.
@@ -124,6 +122,7 @@ CREATE TABLE comments
   FOREIGN KEY (author_id) REFERENCES users (id),
   FOREIGN KEY (post_id) REFERENCES posts (id)
 );
+CREATE UNIQUE INDEX text ON comments(content(10));
 /**
 Лайк
 сущность состоит только из связей и не имеет собственных полей.
@@ -165,8 +164,7 @@ CREATE TABLE hashtags
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   name       VARCHAR(100)
 );
-CREATE INDEX i_hashtag_id ON hashtags(id);
-CREATE INDEX i_hashtag_name ON hashtags(name);
+CREATE UNIQUE INDEX hashtag_name ON hashtags(name);
 
 CREATE TABLE post_hashtags
 (
