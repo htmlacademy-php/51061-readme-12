@@ -28,6 +28,8 @@ CREATE TABLE users
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   avatar_url VARCHAR(2048)
 );
+CREATE INDEX login ON users(login);
+CREATE INDEX email ON users(email);
 
 /**
 Сообщение
@@ -59,9 +61,10 @@ CREATE TABLE messages
 CREATE TABLE types
 (
   id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  icon_class VARCHAR(30) NOT NULL,
-  title      VARCHAR(130) NOT NULL
+  icon_class VARCHAR(30) NOT NULL UNIQUE ,
+  title      VARCHAR(130) NOT NULL UNIQUE
 );
+CREATE INDEX title ON types(title);
 /**
 Пост
 Состоит из заголовка и содержимого. Набор полей, которые будут заполнены, зависит от выбранного типа.
@@ -96,6 +99,7 @@ CREATE TABLE posts
   FOREIGN KEY (author_id) REFERENCES users (id),
   FOREIGN KEY (content_type_id) REFERENCES types (id)
 );
+CREATE INDEX title ON posts(title);
 /**
 Комментарий
 Текстовый комментарий, оставленный к одному из постов.
@@ -158,6 +162,7 @@ CREATE TABLE hashtags
   update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   name       VARCHAR(100) UNIQUE
 );
+CREATE INDEX name ON hashtags(name);
 
 CREATE TABLE post_hashtags
 (
