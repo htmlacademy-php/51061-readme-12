@@ -44,17 +44,17 @@ INSERT INTO posts SET
     content_type_id=4,
     author_id=1,
     title='Цитата',
-    content='Мы в жизни любим только раз, а после ищем лишь похожих';#1
+    author_quote='Мы в жизни любим только раз, а после ищем лишь похожих';#1
 INSERT INTO posts SET
     content_type_id=3,
     author_id=3,
     title='Игра престолов!',
-    content='Не могу дождаться начала финального сезона своего любимого сериала!';#2
+    text='Не могу дождаться начала финального сезона своего любимого сериала!';#2
 INSERT INTO posts SET
     content_type_id=3,
     author_id=2,
     title='Lorem 256!',
-    content='Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore ut sunt voluptatibus neque magnam odio sint, obcaecati non facilis enim et aut quisquam explicabo, necessitatibus in. Voluptate aspernatur quidem suscipit assumenda, animi perspiciatis eaque doloremque odit placeat obcaecati temporibus sunt architecto eligendi earum doloribus!';#3
+    text='Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore ut sunt voluptatibus neque magnam odio sint, obcaecati non facilis enim et aut quisquam explicabo, necessitatibus in. Voluptate aspernatur quidem suscipit assumenda, animi perspiciatis eaque doloremque odit placeat obcaecati temporibus sunt architecto eligendi earum doloribus!';#3
 INSERT INTO posts SET
     content_type_id=1,
     author_id=4,
@@ -66,6 +66,7 @@ INSERT INTO posts SET
     title='Моя мечта',
     image_url='coast-medium.jpg';#5
 INSERT INTO posts SET
+    title='Лучшие курсы',
     content_type_id=5,
     author_id=4,
     url='www.htmlacademy.ru';#6
@@ -79,3 +80,41 @@ INSERT INTO comments SET
     post_id=1,
     author_id=2,
     content='Ну-ну)';
+
+# получить список постов с сортировкой по популярности и вместе с именами авторов и типом контента;
+SELECT
+       p.title AS title,
+       t.icon_class AS type,
+       u.login AS user_name,
+       u.avatar_url AS avatar,
+       p.views
+FROM posts p
+  JOIN users u on p.author_id = u.id
+  JOIN types t on p.content_type_id = t.id
+ORDER BY views ASC;
+
+# получить список постов для конкретного пользователя;
+SELECT * FROM posts WHERE author_id=1;
+
+# получить список комментариев для одного поста, в комментариях должен быть логин пользователя;
+SELECT
+       c.id AS id,
+       c.created_at AS created_at,
+       content,
+       u.login AS login
+FROM comments c
+  JOIN users u on c.author_id = u.id
+  WHERE post_id=6;
+
+# добавить лайк к посту;
+INSERT INTO likes SET
+  author_id=2,
+  post_id=2;
+
+
+# подписаться на пользователя.
+INSERT INTO subscriptions SET
+  author_id=2,
+  subscription=1;
+
+

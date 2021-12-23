@@ -84,7 +84,7 @@ CREATE TABLE posts
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   title           VARCHAR(255) NOT NULL,
-  content         TEXT,
+  text         TEXT,
   author_quote    VARCHAR(100),
   image_url       VARCHAR(2048),
   video_url       VARCHAR(2048),
