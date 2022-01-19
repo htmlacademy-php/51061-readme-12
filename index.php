@@ -13,9 +13,9 @@ mysqli_set_charset($con, "utf8");
 
 $queries = get_queries();
 //Отправьте SQL-запрос для получения типов контента
-$postTypes = $queries['postTypes']($con);
+$post_types = $queries['postTypes']($con);
 //Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
-$postsData  = $queries['posts']($con);
+$posts_data  = $queries['posts']($con);
 
 //Используйте эти данные для показа списка постов и списка типов контента на главной странице.
 //-- списка постов - преобразуем вывод постов для отображения страницы
@@ -41,7 +41,7 @@ $posts = array_map(function ($value){
         "user_name" => $value['user_name'],
         "avatar" =>  $value['avatar']
     ];
-},$postsData);
+},$posts_data);
 
 //-- списка типов контента
 
@@ -53,7 +53,7 @@ $user_name = 'Aндрей';
 $title = 'readme: популярное';
 
 
-$content = include_template('main.php', compact("posts", "current_time"));
+$content = include_template('main.php', compact("posts", "current_time","post_types"));
 $page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
 
 print($page);
