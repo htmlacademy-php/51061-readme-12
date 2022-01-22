@@ -50,17 +50,17 @@
                         <span>Все</span>
                     </a>
                 </li>
-                <? foreach ($post_types  as $key=>$type):?>
-                <? $type_name= explode('-', $type['icon_class'])[1]?>
-                    <li class="popular__filters-item filt ers__item">
+                <? foreach ($post_types as $key => $type): ?>
+                    <? $type_name = explode('-', $type['icon_class'])[1] ?>
+                    <li class="popular__filters-item filters__item">
                         <a class="filters__button filters__button--photo button" href="#">
                             <span class="visually-hidden">Фото</span>
                             <svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-<?=$type_name  ?>"></use>
+                                <use xlink:href="#icon-filter-<?= $type_name ?>"></use>
                             </svg>
                         </a>
                     </li>
-                <? endforeach;?>
+                <? endforeach; ?>
             </ul>
         </div>
     </div>
