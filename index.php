@@ -11,11 +11,36 @@ if (!$con) {
 }
 mysqli_set_charset($con, "utf8");
 
-$queries = get_queries();
 //Отправьте SQL-запрос для получения типов контента
-$post_types = $queries['postTypes']($con);
+$post_types = get_post_types($con);
 //Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
-$posts = $queries['posts']($con);
+$postsData = get_posts($con);
+
+//Используйте эти данные для показа списка постов и списка типов контента на главной странице.
+//-- списка постов - преобразуем вывод постов для отображения страницы
+$posts= array_map(function ($value) {
+    $content = $value['text'];
+
+    if ($value['image_url']) {
+        $content = $value['image_url'];
+    }
+    if ($value['video_url']) {
+        $content = $value['video_url'];
+    }
+    if ($value['url']) {
+        $content = $value['url'];
+    }
+    if ($value['author_quote']) {
+        $content = $value['author_quote'];
+    }
+    return [
+        'title' => $value['title'],
+        "type" => $value['type'],
+        "content" => $content,
+        "user_name" => $value['user_name'],
+        "avatar" => $value['avatar']
+    ];
+}, $postsData);
 
 $current_time = date_create()->getTimestamp();
 
