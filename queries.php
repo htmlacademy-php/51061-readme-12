@@ -39,40 +39,7 @@ function get_posts($con)
         show_query_error($con, "Не удалось получить список постов");
         return;
     }
-    $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    //Используйте эти данные для показа списка постов и списка типов контента на главной странице.
-    //-- списка постов - преобразуем вывод постов для отображения страницы
-    return  array_map(function ($value) {
-        $content = $value['text'];
-
-        if ($value['image_url']) {
-            $content = $value['image_url'];
-        }
-        if ($value['video_url']) {
-            $content = $value['video_url'];
-        }
-        if ($value['url']) {
-            $content = $value['url'];
-        }
-        if ($value['author_quote']) {
-            $content = $value['author_quote'];
-        }
-        return [
-            'title' => $value['title'],
-            "type" => $value['type'],
-            "content" => $content,
-            "user_name" => $value['user_name'],
-            "avatar" => $value['avatar']
-        ];
-    }, $rows);
-}
-
-function get_queries()
-{
-    return [
-        'postTypes' => "get_post_types",
-        'posts' => "get_posts"
-    ];
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 ?>
