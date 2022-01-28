@@ -3,8 +3,12 @@
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
+ * @var $current_post_type string
  */
-
+$current_type='';
+if ($current_post_type) {
+    $current_type = explode('-', $current_post_type)[1];
+}
 ?>
 
 <div class="container">
@@ -46,14 +50,16 @@
             <ul class="popular__filters-list filters__list">
                 <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
                     <a class="filters__button filters__button--ellipse filters__button--all filters__button--active"
-                       href="#">
+                       href="/">
                         <span>Все</span>
                     </a>
                 </li>
                 <? foreach ($post_types as $key => $type): ?>
                     <? $type_name = explode('-', $type['icon_class'])[1] ?>
+                    <? $link = '/?type='.$type['icon_class'] ?>
+                    <? $active_class = $current_type==$type_name ? 'filters__button--active':''; ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--photo button" href="#">
+                        <a class="filters__button filters__button--photo button <?=$active_class?>" href="<?=$link?>">
                             <span class="visually-hidden">Фото</span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $type_name ?>"></use>

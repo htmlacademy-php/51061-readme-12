@@ -16,7 +16,7 @@ function get_post_types($con)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function get_posts($con)
+function get_posts($con,$post_type)
 {
     $query = 'SELECT
                    p.title AS title,
@@ -31,10 +31,15 @@ function get_posts($con)
                    p.video_url AS video_url
             FROM posts p
               JOIN users u on p.author_id = u.id
-              JOIN types t on p.content_type_id = t.id
-            ORDER BY views ASC;';
+              JOIN types t on p.content_type_id = t.id';
 
+    if ($post_type) {
+        $query = $query.' WHERE t.icon_class = "'.$post_type .'" ';
+    }
+
+    $query = $query .' ORDER BY views ASC;';
     $result = mysqli_query($con, $query);
+
     if (!$result) {
         show_query_error($con, "Не удалось получить список постов");
         return;
