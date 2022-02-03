@@ -1,15 +1,18 @@
 <?php
+
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
  * @var $current_post_type string
  */
-$current_type='';
+$current_type = '';
 if ($current_post_type) {
     $current_type = explode('-', $current_post_type)[1];
 }
 ?>
+
+<section class="page__main page__main--popular">
 
 <div class="container">
     <h1 class="page__title page__title--popular">Популярное</h1>
@@ -56,10 +59,11 @@ if ($current_post_type) {
                 </li>
                 <? foreach ($post_types as $key => $type): ?>
                     <? $type_name = explode('-', $type['icon_class'])[1] ?>
-                    <? $link = '/?type='.$type['icon_class'] ?>
-                    <? $active_class = $current_type==$type_name ? 'filters__button--active':''; ?>
+                    <? $link = '/?type=' . $type['icon_class'] ?>
+                    <? $active_class = $current_type == $type_name ? 'filters__button--active' : ''; ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--photo button <?=$active_class?>" href="<?=$link?>">
+                        <a class="filters__button filters__button--photo button <?= $active_class ?>"
+                           href="<?= $link ?>">
                             <span class="visually-hidden">Фото</span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $type_name ?>"></use>
@@ -74,7 +78,9 @@ if ($current_post_type) {
         <?php foreach ($posts as $key => $post): ?>
             <article class="popular__post post <?= $post['type'] ?>">
                 <header class="post__header">
-                    <h2><?= htmlspecialchars($post['title']) ?></h2>
+                    <a href="/post.php?id=<?= htmlspecialchars($post['id']) ?>">
+                        <h2><?= htmlspecialchars($post['title']) ?></h2>
+                    </a>
                 </header>
                 <div class="post__main">
                     <?php $safeTitle = htmlspecialchars($post['title']); ?>
@@ -161,3 +167,5 @@ if ($current_post_type) {
         <?php endforeach; ?>
     </div>
 </div>
+</section>
+

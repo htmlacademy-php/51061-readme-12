@@ -413,3 +413,33 @@ function short_content(string $text, int $length = 300, string $full_content_lin
 
     return $output;
 }
+
+/**
+ * Преобразовать данные из базы о посте для отображения
+ * @param array $post Информация о посте
+ * @return array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
+ */
+function format_post_data(array $post):array
+{
+    $content = $post['text'];
+
+    if ($post['image_url']) {
+        $content = $post['image_url'];
+    }
+    if ($post['video_url']) {
+        $content = $post['video_url'];
+    }
+    if ($post['url']) {
+        $content = $post['url'];
+    }
+
+    return [
+        'id'=>$post['id'],
+        'title' => $post['title'],
+        'author_quote' => $post['author_quote'],
+        "type" => $post['type'],
+        "content" => $content,
+        "user_name" => $post['user_name'],
+        "avatar" => $post['avatar']
+    ];
+}

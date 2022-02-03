@@ -16,6 +16,8 @@ $current_post_type='';
 if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con,$_GET['type']);
 }
+
+print($_SERVER['REQUEST_URI']);
 //Отправьте SQL-запрос для получения типов контента
 $post_types = get_post_types($con);
 
@@ -41,6 +43,7 @@ $posts= array_map(function ($value) {
         $content = $value['author_quote'];
     }
     return [
+        'id'=>$value['id'],
         'title' => $value['title'],
         "type" => $value['type'],
         "content" => $content,
@@ -54,6 +57,7 @@ $current_time = date_create()->getTimestamp();
 $is_auth = rand(0, 1);
 $user_name = 'Aндрей';
 $title = 'readme: популярное';
+
 
 $content = include_template('main.php', compact("posts", "current_time", "post_types","current_post_type"));
 $page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
