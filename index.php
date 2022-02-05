@@ -1,15 +1,12 @@
 <?php
-
-require_once('helpers.php');
-require_once('queries.php');
-
-date_default_timezone_set('Europe/Moscow');
-//В сценарии главной страницы выполните подключение к MySQL.
-$con = mysqli_connect("localhost", "root", "", "readme");
-if (!$con) {
-    print("Не удалось подключиться к бд" . mysqli_connect_error());
-}
-mysqli_set_charset($con, "utf8");
+/**
+ * @var $con mysqli
+ * @var $current_time string
+ * @var $title string
+ * @var $user_name mysqli
+ * @var $is_auth boolean
+ */
+require_once('bootstrap.php');
 
 $current_post_type='';
 
@@ -17,10 +14,8 @@ if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con,$_GET['type']);
 }
 
-print($_SERVER['REQUEST_URI']);
 //Отправьте SQL-запрос для получения типов контента
 $post_types = get_post_types($con);
-
 
 //Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
 $postsData = get_posts($con,$current_post_type);
@@ -51,13 +46,6 @@ $posts= array_map(function ($value) {
         "avatar" => $value['avatar']
     ];
 }, $postsData);
-
-$current_time = date_create()->getTimestamp();
-
-$is_auth = rand(0, 1);
-$user_name = 'Aндрей';
-$title = 'readme: популярное';
-
 
 $content = include_template('main.php', compact("posts", "current_time", "post_types","current_post_type"));
 $page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
