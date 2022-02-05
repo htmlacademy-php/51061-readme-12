@@ -75,6 +75,7 @@ if ($current_post_type) {
         </div>
     </div>
     <div class="popular__posts">
+        <?php if (count($posts)) :?>
         <?php foreach ($posts as $key => $post): ?>
             <article class="popular__post post <?= $post['type'] ?>">
                 <header class="post__header">
@@ -165,6 +166,9 @@ if ($current_post_type) {
                 </footer>
             </article>
         <?php endforeach; ?>
+        <?php else :?>
+        <h2>Публикаций не найдено</h2>
+        <?php endif;?>
     </div>
 </div>
 </section>

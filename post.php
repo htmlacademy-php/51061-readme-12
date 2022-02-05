@@ -11,6 +11,7 @@ require_once('bootstrap.php');
 $post_types = get_post_types($con);
 
 $post_id='';
+$content='';
 $post=null;
 
 if (isset($_GET['id'])) {
