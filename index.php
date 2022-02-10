@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var $con mysqli
  * @var $current_time string
@@ -8,21 +9,21 @@
  */
 require_once('bootstrap.php');
 
-$current_post_type='';
+$current_post_type = '';
 
 if (isset($_GET['type'])) {
-    $current_post_type = mysqli_real_escape_string($con,$_GET['type']);
+    $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
 }
 
 //Отправьте SQL-запрос для получения типов контента
 $post_types = get_post_types($con);
 
 //Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
-$postsData = get_posts($con,$current_post_type);
+$postsData = get_posts($con, $current_post_type);
 
 //Используйте эти данные для показа списка постов и списка типов контента на главной странице.
 //-- списка постов - преобразуем вывод постов для отображения страницы
-$posts= array_map(function ($value) {
+$posts = array_map(function ($value) {
     $content = $value['text'];
 
     if ($value['image_url']) {
@@ -38,7 +39,7 @@ $posts= array_map(function ($value) {
         $content = $value['author_quote'];
     }
     return [
-        'id'=>$value['id'],
+        'id' => $value['id'],
         'title' => $value['title'],
         "type" => $value['type'],
         "content" => $content,
@@ -47,7 +48,7 @@ $posts= array_map(function ($value) {
     ];
 }, $postsData);
 
-$content = include_template('main.php', compact("posts", "current_time", "post_types","current_post_type"));
+$content = include_template('main.php', compact("posts", "current_time", "post_types", "current_post_type"));
 $page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
 
 print($page);

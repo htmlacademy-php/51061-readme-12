@@ -33,7 +33,7 @@ function get_post_types($con)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function get_post($con,$id)
+function get_post($con, $id)
 {
     if (!$id) {
         return 'Нет Id запроса';
@@ -51,7 +51,7 @@ function get_post($con,$id)
     return mysqli_fetch_assoc($result);
 }
 
-function get_author_info($con,$id)
+function get_author_info($con, $id)
 {
 //    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
     $sql = 'SELECT
@@ -72,7 +72,7 @@ function get_author_info($con,$id)
     return mysqli_fetch_assoc($result);
 }
 
-function get_subscribers_count($con,$author_id)
+function get_subscribers_count($con, $author_id)
 {
 //    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
     $sql = 'SELECT COUNT(subscription) as count
@@ -89,7 +89,7 @@ function get_subscribers_count($con,$author_id)
     return mysqli_fetch_assoc($result)['count'];
 }
 
-function get_posts_count($con,$author_id)
+function get_posts_count($con, $author_id)
 {
 //    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
     $sql = 'SELECT count(id) as count
@@ -107,15 +107,15 @@ function get_posts_count($con,$author_id)
 }
 
 
-function get_posts($con,$post_type)
+function get_posts($con, $post_type)
 {
     $query = SQL_POST_TEMPLATE;
 
     if ($post_type) {
-        $query = $query.' WHERE t.icon_class = "'.$post_type .'" ';
+        $query = $query . ' WHERE t.icon_class = "' . $post_type . '" ';
     }
 
-    $query = $query .' ORDER BY views ASC;';
+    $query = $query . ' ORDER BY views ASC;';
     $result = mysqli_query($con, $query);
 
     if (!$result) {
@@ -124,4 +124,5 @@ function get_posts($con,$post_type)
     }
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
 ?>
