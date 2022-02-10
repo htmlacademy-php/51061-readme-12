@@ -6,7 +6,7 @@
  * @var $current_time int
  * @var $current_post_type string
  */
-$current_type = '';
+$current_type = null;
 if ($current_post_type) {
     $current_type = explode('-', $current_post_type)[1];
 }
@@ -52,7 +52,8 @@ if ($current_post_type) {
             <b class="popular__filters-caption filters__caption">Тип контента:</b>
             <ul class="popular__filters-list filters__list">
                 <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                    <a class="filters__button filters__button--ellipse filters__button--all filters__button--active"
+                    <? $all_types_active_class= !isset($current_type) ? 'filters__button--active':null ?>
+                    <a class="filters__button filters__button--ellipse filters__button--all <?=$all_types_active_class?>"
                        href="/">
                         <span>Все</span>
                     </a>
@@ -75,7 +76,7 @@ if ($current_post_type) {
         </div>
     </div>
     <div class="popular__posts">
-        <?php if (count($posts)) :?>
+        <?php if (!empty($posts)) :?>
         <?php foreach ($posts as $key => $post): ?>
             <article class="popular__post post <?= $post['type'] ?>">
                 <header class="post__header">
