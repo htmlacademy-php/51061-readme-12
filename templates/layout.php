@@ -4,6 +4,7 @@
  * @var $user_name string
  * @var $content mixed
  * @var $is_auth bool
+ * @var $add_post boolean
  */
 
 ?>
@@ -13,7 +14,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title)?></title>
+    <title><?= htmlspecialchars($title) ?></title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="page">
@@ -198,7 +199,14 @@
                             </div>
                         </li>
                         <li>
-                            <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
+                            <? if (isset($add_post)) : ?>
+                                <a class="header__post-button header__post-button--active button button--transparent"
+                                   href="#">Закрыть</a>
+
+                            <? else : ?>
+                                <a class="header__post-button button button--transparent"
+                                   href="adding-post.html">Пост</a>
+                            <? endif; ?>
                         </li>
                     </ul>
                 </nav>

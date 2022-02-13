@@ -12,7 +12,6 @@ mysqli_set_charset($con, "utf8");
 
 $is_auth = rand(0, 1);
 $user_name = 'Aндрей';
-$title = 'readme: популярное';
 $current_time = date_create()->getTimestamp();
 
 ?>

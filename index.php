@@ -3,12 +3,12 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $title string
  * @var $user_name mysqli
  * @var $is_auth boolean
  */
 require_once('bootstrap.php');
 
+$title = 'readme: популярное';
 $current_post_type = '';
 
 if (isset($_GET['type'])) {
