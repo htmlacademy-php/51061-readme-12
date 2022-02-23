@@ -45,7 +45,9 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
-        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
+        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error(
+                $link
+            );
         die($errorMsg);
     }
 
@@ -80,7 +82,9 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $func(...$values);
 
         if (mysqli_errno($link) > 0) {
-            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
+            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error(
+                    $link
+                );
             die($errorMsg);
         }
     }
@@ -110,8 +114,12 @@ function db_get_prepare_stmt($link, $sql, $data = [])
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form(int $number, string $one, string $two, string $many): string
-{
+function get_noun_plural_form(
+    int $number,
+    string $one,
+    string $two,
+    string $many
+): string {
     $number = (int)$number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
@@ -170,7 +178,9 @@ function check_youtube_url($url)
 
     set_error_handler(function () {
     }, E_WARNING);
-    $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id);
+    $headers = get_headers(
+        'https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id
+    );
     restore_error_handler();
 
     if (!is_array($headers)) {
@@ -253,7 +263,13 @@ function extract_youtube_id($youtube_url)
  */
 function generate_random_date($index)
 {
-    $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
+    $deltas = [
+        ['minutes' => 59],
+        ['hours' => 23],
+        ['days' => 6],
+        ['weeks' => 4],
+        ['months' => 11]
+    ];
     $dcnt = count($deltas);
 
     if ($index < 0) {
@@ -324,27 +340,58 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
     switch ($diff) {
         case ($diff < TIME_POINTS["hour"]): //если до текущего времени прошло меньше 60 минут, то формат будет вида «% минут назад»;
             $past_time = floor($diff / TIME_POINTS["minute"]);
-            $plural_form = get_noun_plural_form($past_time, "минута", "минуты", "минут");
+            $plural_form = get_noun_plural_form(
+                $past_time,
+                "минута",
+                "минуты",
+                "минут"
+            );
             break;
         case (shouldWeShowAsHoursAgo(
             $diff
         )): //если до текущего времени прошло больше 60 минут, но меньше 24 часов, то формат будет вида «% часов назад»;
             $past_time = floor($diff / TIME_POINTS['hour']);
-            $plural_form = get_noun_plural_form($past_time, "час", "часы", "часов");
+            $plural_form = get_noun_plural_form(
+                $past_time,
+                "час",
+                "часы",
+                "часов"
+            );
             break;
-        case (shouldWeShowAsDaysAgo($diff))://если до текущего времени прошло больше 24 часов, но меньше 7 дней, то формат будет вида «% дней назад»;
+        case (shouldWeShowAsDaysAgo(
+            $diff
+        ))://если до текущего времени прошло больше 24 часов, но меньше 7 дней, то формат будет вида «% дней назад»;
             $past_time = floor($diff / TIME_POINTS['day']);
-            $plural_form = get_noun_plural_form($past_time, "день", "дня", "дней");
+            $plural_form = get_noun_plural_form(
+                $past_time,
+                "день",
+                "дня",
+                "дней"
+            );
             break;
-        case (shouldWeShowAsWeeksAgo($diff)): //если до текущего времени прошло больше 7 дней, но меньше 5 недель, то формат будет вида «% недель назад»;
+        case (shouldWeShowAsWeeksAgo(
+            $diff
+        )): //если до текущего времени прошло больше 7 дней, но меньше 5 недель, то формат будет вида «% недель назад»;
             $past_time = floor($diff / TIME_POINTS['week']);
-            $plural_form = get_noun_plural_form($past_time, "неделя", "недели", "недель");
+            $plural_form = get_noun_plural_form(
+                $past_time,
+                "неделя",
+                "недели",
+                "недель"
+            );
             break;
         case (shouldWeShowMonthAgo($diff)) :
             //если до текущего времени прошло больше 5 недель, то формат будет вида «% месяцев назад».
             $current_date = (new DateTime())->setTimestamp($current_timestamp);
-            $past_time = date_diff($current_date, date_create($date))->format('%m');
-            $plural_form = get_noun_plural_form($past_time, "месяц", "месяца", "месяцев");
+            $past_time = date_diff($current_date, date_create($date))->format(
+                '%m'
+            );
+            $plural_form = get_noun_plural_form(
+                $past_time,
+                "месяц",
+                "месяца",
+                "месяцев"
+            );
             break;
     }
 
@@ -402,8 +449,11 @@ function trunc_text(string $text, int $length = 300): string
  * @param string $full_content_link ссылка на полную версию поста
  * @return string html
  */
-function short_content(string $text, int $length = 300, string $full_content_link = "#"): string
-{
+function short_content(
+    string $text,
+    int $length = 300,
+    string $full_content_link = "#"
+): string {
     $output = is_need_trunc($text, $length)
         ? '<p>' . trunc_text(
             $text,
@@ -419,7 +469,7 @@ function short_content(string $text, int $length = 300, string $full_content_lin
  * @param array $post Информация о посте
  * @return array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  */
-function format_post_data(array $post):array
+function format_post_data(array $post): array
 {
     $content = $post['text'];
 
@@ -434,7 +484,7 @@ function format_post_data(array $post):array
     }
 
     return [
-        'id'=>$post['id'],
+        'id' => $post['id'],
         'title' => $post['title'],
         'author_quote' => $post['author_quote'],
         "type" => $post['type'],
@@ -443,3 +493,25 @@ function format_post_data(array $post):array
         "avatar" => $post['avatar']
     ];
 }
+
+function has_file($file_name)
+{
+    return isset($_FILES[$file_name]) && $_FILES['userpic-file-photo']['error'] != 4;
+}
+
+/**
+ * Сохраняет файл на сервер
+ * @param  $file Информация о посте
+ * @return string - путь файла на сервере
+ */
+function save_photo_to_server($file): string
+{
+    $file_name = $file['name'];
+    $file_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
+    $file_url = '/uploads/' . $file_name;
+
+    move_uploaded_file($file['tmp_name'], $file_path . $file_name);
+
+    return $file_url;
+}
+

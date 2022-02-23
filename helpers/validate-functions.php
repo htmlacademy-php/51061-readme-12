@@ -148,27 +148,14 @@ function validate_video($value)
  */
 function validate_image_url($value)
 {
-    if (filter_var($value, FILTER_VALIDATE_URL) === false && !empty($value)) {
-        return "Была введена неправильная ссылка";
+    $error = validate_url($value);
+
+    if ($error) {
+        return $error;
     }
 
-    $validImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-
-    if (empty($value) && (empty($_FILES['userpic-file-photo']) || $_FILES['userpic-file-photo']['error'] === 4)) {
-        return 'Вы должны загрузить фото, либо прикрепить ссылку из интернета';
-    }
-
-    if (!empty($value)) {
-        $tmp = explode('.', $value);
-        $type = 'image/' . end($tmp);
-
-        if (!in_array($type, $validImageTypes)) {
-            return 'Неверный формат загружаемого файла.';
-        }
-
-        if (file_get_contents($value) === false) {
-            return 'Не удалось найти изображение. Проверьте ссылку.';
-        }
+    if (file_get_contents($value) === false) {
+        return 'Не удалось найти изображение. Проверьте ссылку.';
     }
 }
 
@@ -178,10 +165,10 @@ function validate_image_url($value)
  * @param $value
  * @return string|void
  */
-function validate_image($value)
+function validate_image($image)
 {
-    if ($_FILES[$value] && $_FILES[$value]['error'] !== 4) {
-        $fileType = $_FILES[$value]['type'];
+    if ($image && $image['error'] !== 4) {
+        $fileType = $image['type'];
 
         $validImageTypes = [
             'image/png',

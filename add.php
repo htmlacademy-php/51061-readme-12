@@ -21,23 +21,52 @@ if (isset($_GET['type'])) {
 
 //Отправьте SQL-запрос для получения типов контента
 $post_types = get_post_types($con);
+$post_types_ids = [];
 
+foreach ($post_types as $type) {
+    $post_types_ids[$type['icon_class']] = $type['id'];
+}
 
 $forms_fields_rules = [
     'photo' => [
         'heading' => 'validate_heading',
         'photo-url' => function ($value) {
-//            if (validate_attached_image())
-            return validate_url($value, false);
+            if (has_file('userpic-file-photo')) {
+                return;
+            }
+            return validate_image_url($value);
         },
         'tags' => 'validate_hashtag',
         'userpic-file-photo' => function ($value) {
-            var_dump($value);
+            return validate_image($value);
         },
     ]
 ];
 
 $errors = [];
+
+
+if (empty($errors)) {
+    if ($current_post_type == 'photo') {
+        $post = [
+            'title' => $_POST['heading'],
+            'content_type_id' => $post_types_ids['post-photo'],
+            'author_id' => '1',
+        ];
+        if (has_file('userpic-file-photo')) {
+            $savedFileUrl = save_photo_to_server($_FILES['userpic-file-photo']);
+            $post['image_url'] = $savedFileUrl;
+        } else {
+            $post['image_url'] = $_POST['photo-url'];
+        }
+        var_dump($post);
+        $post_id = save_post_photo($con, $post);
+
+        if ($post_id) {
+            var_dump($post_id);
+        }
+    }
+}
 
 
 $current_form_fields = $forms_fields_rules[$current_post_type];
@@ -55,6 +84,7 @@ foreach ($current_form_fields as $field => $validation) {
         $errors[$field] = $field_error;
     }
 }
+
 
 $content = include_template(
     'adding-post.php',

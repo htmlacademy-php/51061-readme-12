@@ -24,6 +24,11 @@ $errorFieldTitles = [
     'post-link' => 'Ссылка'
 ];
 
+function error_field_class($errors, $field)
+{
+    return isset($errors[$field]) ? 'form__input-section--error' : '';
+}
+
 ?>
 <main class="page__main page__main--adding-post">
     <div class="page__main-section">
@@ -73,7 +78,11 @@ $errorFieldTitles = [
                                             for="photo-heading">Заголовок
                                             <span
                                                 class="form__input-required">*</span></label>
-                                        <div class="form__input-section">
+                                        <div
+                                            class="form__input-section <?= error_field_class(
+                                                $errors,
+                                                'heading'
+                                            ) ?>">
                                             <input
                                                 class="adding-post__input form__input"
                                                 id="photo-heading" type="text"
@@ -104,7 +113,11 @@ $errorFieldTitles = [
                                             class="adding-post__label form__label"
                                             for="photo-url">Ссылка из
                                             интернета</label>
-                                        <div class="form__input-section">
+                                        <div
+                                            class="form__input-section  <?= error_field_class(
+                                                $errors,
+                                                'photo-url'
+                                            ) ?>">
                                             <input
                                                 class="adding-post__input form__input"
                                                 id="photo-url" type="text"
@@ -134,7 +147,11 @@ $errorFieldTitles = [
                                         <label
                                             class="adding-post__label form__label"
                                             for="photo-tags">Теги</label>
-                                        <div class="form__input-section">
+                                        <div
+                                            class="form__input-section <?= error_field_class(
+                                                $errors,
+                                                'tags'
+                                            ) ?>">
                                             <input
                                                 class="adding-post__input form__input"
                                                 id="photo-tags" type="text"
@@ -181,10 +198,9 @@ $errorFieldTitles = [
                                     class="adding-post__input-file-wrapper form__input-file-wrapper">
                                     <div
                                         class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
-                                        <!--                                        class="adding-post__input-file form__input-file"-->
                                         <input
-
-                                            id="userpic-file-photo"
+                                            class="adding-post__input-file"
+                                            id=" userpic-file-photo"
                                             type="file"
                                             name="userpic-file-photo" title=" ">
                                         <div class="form__file-zone-text">

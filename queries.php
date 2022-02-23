@@ -125,4 +125,27 @@ function get_posts($con, $post_type)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+function save_post_photo($con, $post_data)
+{
+    $sql = 'INSERT INTO posts SET title = ?, image_url = ?, content_type_id = ?, author_id = ?';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param(
+        $stmt,
+        'ssss',
+        $post_data['title'],
+        $post_data['image_url'],
+        $post_data['content_type_id'],
+        $post_data['author_id'],
+    );
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    var_dump($result . '//////////////////');
+    if ($result) {
+        return $last_id = mysqli_insert_id($con);
+    } else {
+        show_query_error($con, "Не удалось создать пост");
+        return;
+    }
+}
+
 ?>
