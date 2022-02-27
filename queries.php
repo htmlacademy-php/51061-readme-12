@@ -44,6 +44,7 @@ function get_post($con, $id)
     mysqli_stmt_bind_param($stmt, 's', $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
+    var_dump(mysqli_error($con));
     if (!$result) {
         show_query_error($con, "Не удалось загрузить данные о посте");
         return;
@@ -127,25 +128,21 @@ function get_posts($con, $post_type)
 
 function save_post_photo($con, $post_data)
 {
-    $sql = 'INSERT INTO posts SET title = ?, image_url = ?, content_type_id = ?, author_id = ?';
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param(
-        $stmt,
-        'ssss',
-        $post_data['title'],
-        $post_data['image_url'],
+    $sql = "INSERT INTO posts SET
+    content_type_id= ?,
+    author_id= ?,
+    title=?,
+    image_url=?;";
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
         $post_data['content_type_id'],
         $post_data['author_id'],
-    );
+        $post_data['title'],
+        $post_data['image_url'],
+    ]);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    var_dump($result . '//////////////////');
-    if ($result) {
-        return $last_id = mysqli_insert_id($con);
-    } else {
-        show_query_error($con, "Не удалось создать пост");
-        return;
-    }
+
+    return mysqli_insert_id($con);
 }
 
 ?>
