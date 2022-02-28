@@ -145,4 +145,38 @@ function save_post_photo($con, $post_data)
     return mysqli_insert_id($con);
 }
 
+/**
+ * Добавление тега к посту
+ * @param mysqli $con Ресурс соединения
+ * @param string $tag
+ * @return string|false - id тега
+ */
+function saveTag(mysqli $con, string $tag)
+{
+    $sql = "INSERT INTO hashtags SET name=?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
+    mysqli_stmt_execute($stmt);
+    $tag_id = mysqli_insert_id($con);
+    var_dump(mysqli_insert_id($con));
+    return $tag_id;
+}
+
+/**
+ * Добавление тега к посту
+ * @param mysqli $mysql Ресурс соединения
+ * @param int $tag_id
+ * @param int $post_id
+ */
+function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
+{
+    $sql = "INSERT INTO post_hashtags SET
+        post_id=?,
+        hashtag_id=?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
+    var_dump($tag_id, $post_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    var_dump($result);
+}
+
 ?>

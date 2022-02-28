@@ -203,6 +203,10 @@ function validate_hashtag($value)
 
         $hashtags = explode(' ', $value);
 
+        if (count(array_unique($hashtags)) < count($hashtags)) {
+            return 'Указаны одинаковые хештеги';
+        }
+        
         foreach ($hashtags as $hashtag) {
             if (substr($hashtag, 0, 1) !== '#') {
                 return 'Хэштег должен начинаться со знака решетки';

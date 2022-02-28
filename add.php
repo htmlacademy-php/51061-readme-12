@@ -63,14 +63,14 @@ foreach ($current_form_fields as $field => $validation) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($errors)) {
     $new_post_id = null;
+    $post = [
+        'title' => $_POST['heading'],
+        'content_type_id' => $post_types_ids['post-photo'],
+        'author_id' => '1',
+    ];
 
     switch ($current_post_type) {
         case 'photo':
-            $post = [
-                'title' => $_POST['heading'],
-                'content_type_id' => $post_types_ids['post-photo'],
-                'author_id' => '1',
-            ];
             if (has_file('userpic-file-photo')) {
                 $savedFileUrl = save_photo_to_server(
                     $_FILES['userpic-file-photo']
@@ -83,8 +83,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($errors)) {
             break;
     }
 
-    if ($new_post_id) {
-        header("Location: /post.php?id=" . $new_post_id);
+    if ($new_post_id && isset($_POST['tags'])) {
+        $hashtags = explode(' ', $_POST['tags']);
+        foreach ($hashtags as $hashtag) {
+            $tag_id = saveTag($con, $hashtag);
+            if ($tag_id) {
+                add_tag_to_post($con, $tag_id, $new_post_id);
+            }
+        }
+//        header("Location: /post.php?id=" . $new_post_id);
     }
 }
 
