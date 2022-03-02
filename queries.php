@@ -157,7 +157,6 @@ function saveTag(mysqli $con, string $tag)
     $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
     mysqli_stmt_execute($stmt);
     $tag_id = mysqli_insert_id($con);
-    var_dump(mysqli_insert_id($con));
     return $tag_id;
 }
 
@@ -173,10 +172,23 @@ function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
         post_id=?,
         hashtag_id=?";
     $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
-    var_dump($tag_id, $post_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    var_dump($result);
+}
+
+/**
+ * Добавление тега к посту
+ * @param mysqli $mysql Ресурс соединения
+ * @param string $tag
+ */
+function get_tag_id(mysqli $con, string $tag)
+{
+    $sql = "SELECT id from hashtags WHERE name = ?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt,);
+    $row = mysqli_fetch_assoc($res);
+    return $row['id'];
 }
 
 ?>

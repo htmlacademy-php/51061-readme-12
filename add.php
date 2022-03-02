@@ -85,14 +85,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($errors)) {
 
     if ($new_post_id && isset($_POST['tags'])) {
         $hashtags = explode(' ', $_POST['tags']);
+
         foreach ($hashtags as $hashtag) {
-            $tag_id = saveTag($con, $hashtag);
-            if ($tag_id) {
-                add_tag_to_post($con, $tag_id, $new_post_id);
+            $tag_id = get_tag_id($con, $hashtag);
+            if (!$tag_id) {
+                $tag_id = saveTag($con, $hashtag);
             }
+            add_tag_to_post($con, $tag_id, $new_post_id);
         }
-//        header("Location: /post.php?id=" . $new_post_id);
     }
+    header("Location: /post.php?id=" . $new_post_id);
 }
 
 
