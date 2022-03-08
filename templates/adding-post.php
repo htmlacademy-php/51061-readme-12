@@ -5,6 +5,7 @@
  * @var $current_time int
  * @var $current_post_type string
  * @var $errors array
+ * @var $form_fields array
  */
 
 function getPostVal($name)
@@ -12,7 +13,7 @@ function getPostVal($name)
     return $_POST[$name] ?? "";
 }
 
-$errorFieldTitles = [
+$error_field_titles = [
     'heading' => 'Заголовок',
     'tags' => 'Теги',
     'photo-url' => 'Ссылка из интернета',
@@ -24,10 +25,10 @@ $errorFieldTitles = [
     'post-link' => 'Ссылка'
 ];
 
-function error_field_class($errors, $field)
-{
-    return isset($errors[$field]) ? 'form__input-section--error' : '';
-}
+//function error_field_class($errors, $field)
+//{
+//    return isset($errors[$field]) ? 'form__input-section--error' : '';
+//}
 
 ?>
 <main class="page__main page__main--adding-post">
@@ -64,127 +65,29 @@ function error_field_class($errors, $field)
                 </div>
                 <div class="adding-post__tab-content">
                     <section
-                        class="adding-post__photo tabs__content <?= $current_post_type === 'photo' ? 'tabs__content--active' : '' ?>">
-                        <h2 class="visually-hidden">Форма добавления фото</h2>
-                        <form class="adding-post__form form" action="/add.php"
+                        class="adding-post__<?= $current_post_type ?> tabs__content tabs__content--active">
+                        <h2>Форма
+                            добавления <?= $current_post_type ?></h2>
+                        <form class="adding-post__form form"
+                              action="/add.php?type=<?= $current_post_type ?>"
                               method="post"
                               enctype="multipart/form-data">
                             <div class="form__text-inputs-wrapper">
+
                                 <div class="form__text-inputs">
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="photo-heading">Заголовок
-                                            <span
-                                                class="form__input-required">*</span></label>
-                                        <div
-                                            class="form__input-section <?= error_field_class(
-                                                $errors,
-                                                'heading'
-                                            ) ?>">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="photo-heading" type="text"
-                                                name="heading"
-                                                value="<?= getPostVal(
-                                                    'heading'
-                                                ); ?>"
-                                                placeholder="Введите заголовок">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-
-                                            <? if (!empty($errors) && isset($errors['heading'])) : ?>
-                                                <div class="form__error-text">
-                                                    <h3 class="form__error-title">
-                                                        Заголовок сообщения</h3>
-                                                    <p class="form__error-desc">
-                                                        <?= $errors['heading'] ?></p>
-                                                </div>
-                                            <? endif; ?>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="photo-url">Ссылка из
-                                            интернета</label>
-                                        <div
-                                            class="form__input-section  <?= error_field_class(
-                                                $errors,
-                                                'photo-url'
-                                            ) ?>">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="photo-url" type="text"
-                                                name="photo-url"
-                                                value="<?= getPostVal(
-                                                    'photo-url'
-                                                ); ?>"
-                                                placeholder="Введите ссылку">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-                                            <? if (!empty($errors) && isset($errors['photo-url'])) : ?>
-                                                <div class="form__error-text">
-                                                    <h3 class="form__error-title">
-                                                        Ссылка из
-                                                        интернета</h3>
-                                                    <p class="form__error-desc">
-                                                        <?= $errors['photo-url'] ?></p>
-                                                </div>
-                                            <? endif; ?>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="photo-tags">Теги</label>
-                                        <div
-                                            class="form__input-section <?= error_field_class(
-                                                $errors,
-                                                'tags'
-                                            ) ?>">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="photo-tags" type="text"
-                                                name="tags"
-                                                value="<?= getPostVal(
-                                                    'tags'
-                                                ); ?>"
-                                                placeholder="Введите теги">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-                                            <? if (!empty($errors) && isset($errors['photo-url'])) : ?>
-                                                <div class="form__error-text">
-                                                    <h3 class="form__error-title">
-                                                        Теги</h3>
-                                                    <p class="form__error-desc">
-                                                        <?= $errors['tags'] ?></p>
-                                                </div>
-                                            <? endif; ?>
-                                        </div>
-                                    </div>
+                                    <? foreach ($form_fields as $form_field): ?>
+                                        <? print($form_field) ?>
+                                    <? endforeach; ?>
                                 </div>
-                                <? if (!empty($errors)) : ?>
 
+                                <? if (!empty($errors)) : ?>
                                     <div class="form__invalid-block">
                                         <b class="form__invalid-slogan">Пожалуйста,
                                             исправьте следующие ошибки:</b>
                                         <ul class="form__invalid-list">
                                             <?php foreach ($errors as $key => $value) : ?>
                                                 <li class="form__invalid-item">
-                                                    <?= $errorFieldTitles[$key] ?>
+                                                    <?= $error_field_titles[$key] ?>
                                                     .<?= $value ?>
                                                 </li>
                                             <? endforeach; ?>
@@ -192,38 +95,41 @@ function error_field_class($errors, $field)
                                     </div>
                                 <? endif; ?>
                             </div>
-                            <div
-                                class="adding-post__input-file-container form__input-container form__input-container--file">
+                            <? if ($current_post_type === 'photo') : ?>
                                 <div
-                                    class="adding-post__input-file-wrapper form__input-file-wrapper">
+                                    class="adding-post__input-file-container form__input-container form__input-container--file">
                                     <div
-                                        class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
-                                        <input
-                                            class="adding-post__input-file"
-                                            id=" userpic-file-photo"
-                                            type="file"
-                                            name="userpic-file-photo" title=" ">
-                                        <div class="form__file-zone-text">
-                                            <span>Перетащите фото сюда</span>
+                                        class="adding-post__input-file-wrapper form__input-file-wrapper">
+                                        <div
+                                            class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
+                                            <input
+                                                class="adding-post__input-file"
+                                                id=" userpic-file-photo"
+                                                type="file"
+                                                name="userpic-file-photo"
+                                                title=" ">
+                                            <div class="form__file-zone-text">
+                                                <span>Перетащите фото сюда</span>
+                                            </div>
                                         </div>
+                                        <button
+                                            class="adding-post__input-file-button form__input-file-button form__input-file-button--photo button"
+                                            type="button">
+                                            <span>Выбрать фото</span>
+                                            <svg
+                                                class="adding-post__attach-icon form__attach-icon"
+                                                width="10" height="20">
+                                                <use
+                                                    xlink:href="#icon-attach"></use>
+                                            </svg>
+                                        </button>
                                     </div>
-                                    <button
-                                        class="adding-post__input-file-button form__input-file-button form__input-file-button--photo button"
-                                        type="button">
-                                        <span>Выбрать фото</span>
-                                        <svg
-                                            class="adding-post__attach-icon form__attach-icon"
-                                            width="10" height="20">
-                                            <use
-                                                xlink:href="#icon-attach"></use>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div
-                                    class="adding-post__file adding-post__file--photo form__file dropzone-previews">
+                                    <div
+                                        class="adding-post__file adding-post__file--photo form__file dropzone-previews">
 
+                                    </div>
                                 </div>
-                            </div>
+                            <? endif; ?>
                             <div class="adding-post__buttons">
                                 <button
                                     class="adding-post__submit button button--main"
@@ -235,119 +141,6 @@ function error_field_class($errors, $field)
                         </form>
                     </section>
 
-                    <section
-                        class="adding-post__video tabs__content <?= $current_post_type === 'video' ? 'tabs__content--active' : '' ?>">
-                        <h2 class="visually-hidden">Форма добавления видео</h2>
-                        <form class="adding-post__form form"
-                              action="add.php" method="post"
-                              enctype="multipart/form-data">
-                            <div class="form__text-inputs-wrapper">
-                                <div class="form__text-inputs">
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="video-heading">Заголовок
-                                            <span
-                                                class="form__input-required">*</span></label>
-                                        <div class="form__input-section">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="video-heading" type="text"
-                                                name="video-heading"
-                                                placeholder="Введите заголовок">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-                                            <div class="form__error-text">
-                                                <h3 class="form__error-title">
-                                                    Заголовок сообщения</h3>
-                                                <p class="form__error-desc">
-                                                    Текст сообщения об ошибке,
-                                                    подробно
-                                                    объясняющий, что не так.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="video-url">Ссылка youtube
-                                            <span
-                                                class="form__input-required">*</span></label>
-                                        <div class="form__input-section">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="video-url" type="text"
-                                                name="video-url"
-                                                placeholder="Введите ссылку">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-                                            <div class="form__error-text">
-                                                <h3 class="form__error-title">
-                                                    Заголовок сообщения</h3>
-                                                <p class="form__error-desc">
-                                                    Текст сообщения об ошибке,
-                                                    подробно
-                                                    объясняющий, что не так.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="adding-post__input-wrapper form__input-wrapper">
-                                        <label
-                                            class="adding-post__label form__label"
-                                            for="video-tags">Теги</label>
-                                        <div class="form__input-section">
-                                            <input
-                                                class="adding-post__input form__input"
-                                                id="video-tags" type="text"
-                                                name="photo-heading"
-                                                placeholder="Введите ссылку">
-                                            <button
-                                                class="form__error-button button"
-                                                type="button">!<span
-                                                    class="visually-hidden">Информация об ошибке</span>
-                                            </button>
-                                            <div class="form__error-text">
-                                                <h3 class="form__error-title">
-                                                    Заголовок сообщения</h3>
-                                                <p class="form__error-desc">
-                                                    Текст сообщения об ошибке,
-                                                    подробно
-                                                    объясняющий, что не так.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form__invalid-block">
-                                    <b class="form__invalid-slogan">Пожалуйста,
-                                        исправьте следующие ошибки:</b>
-                                    <ul class="form__invalid-list">
-                                        <li class="form__invalid-item">
-                                            Заголовок. Это поле должно быть
-                                            заполнено.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="adding-post__buttons">
-                                <button
-                                    class="adding-post__submit button button--main"
-                                    type="submit">Опубликовать
-                                </button>
-                                <a class="adding-post__close"
-                                   href="#">Закрыть</a>
-                            </div>
-                        </form>
-                    </section>
 
                     <section
                         class="adding-post__text tabs__content  <?= $current_post_type === 'text' ? 'tabs__content--active' : '' ?>">

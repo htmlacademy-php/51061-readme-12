@@ -114,6 +114,23 @@ function validate_url($value, $required = true)
 }
 
 /**
+ * Функция для валидации ссылки на youtube
+ * @param $value
+ * @return string|void
+ */
+function validate_youtube_url($value)
+{
+    if (empty($value)) {
+        return "Это поле должно быть заполнено";
+    }
+
+    $res = check_youtube_url($value);
+    if ($res !== true) {
+        return $res;
+    }
+}
+
+/**
  * Функция для валидации поля ссылки видео при добавлении поста
  * и вывода ошибок, если валидация не прошла
  * @param $value
@@ -129,9 +146,6 @@ function validate_video($value)
         return "Была введена неправильная ссылка";
     }
 
-
-    set_error_handler(function () {
-    });
     $url = "https://www.youtube.com/oembed?url=" . $value;
     $fop = fopen($url, "rb");
     if (!$fop && $fop == false) {
@@ -206,7 +220,7 @@ function validate_hashtag($value)
         if (count(array_unique($hashtags)) < count($hashtags)) {
             return 'Указаны одинаковые хештеги';
         }
-        
+
         foreach ($hashtags as $hashtag) {
             if (substr($hashtag, 0, 1) !== '#') {
                 return 'Хэштег должен начинаться со знака решетки';
