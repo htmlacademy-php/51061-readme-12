@@ -43,11 +43,17 @@ $forms_fields_rules = [
         return validate_image($value);
     },
     'tags' => 'validate_hashtag',
-    'video-url' => 'validate_youtube_url'
+    'text' => $current_post_type ? 'validate_post_text' : 'validate_quote',
+    'video-url' => 'validate_youtube_url',
+    'quote-author' => 'validate_quote_author'
 ];
+
 $forms_config_by_type = [
     'photo' => ['heading', 'photo-url', 'tags'],
-    'video' => ['heading', 'video-url', 'tags']
+    'video' => ['heading', 'video-url', 'tags'],
+    'text' => ['heading', 'text', 'tags'],
+    'quote' => ['heading', 'text', 'quote-author', 'tags'],
+    'link' => ['heading', 'link', 'tags']
 ];
 
 $form_fields = [];
