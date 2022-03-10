@@ -43,9 +43,10 @@ $forms_fields_rules = [
         return validate_image($value);
     },
     'tags' => 'validate_hashtag',
-    'text' => $current_post_type ? 'validate_post_text' : 'validate_quote',
+    'text' => $current_post_type === 'text' ? 'validate_post_text' : 'validate_quote',
     'video-url' => 'validate_youtube_url',
-    'quote-author' => 'validate_quote_author'
+    'quote-author' => 'validate_quote_author',
+    'url' => 'validate_url'
 ];
 
 $forms_config_by_type = [
@@ -53,7 +54,7 @@ $forms_config_by_type = [
     'video' => ['heading', 'video-url', 'tags'],
     'text' => ['heading', 'text', 'tags'],
     'quote' => ['heading', 'text', 'quote-author', 'tags'],
-    'link' => ['heading', 'link', 'tags']
+    'link' => ['heading', 'url', 'tags']
 ];
 
 $form_fields = [];
@@ -73,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $validation = $forms_fields_rules[$field] ?? false;
         if ($validation) {
             $field_error = $forms_fields_rules[$field]($field_data);
-            var_dump($field . $field_error);
         } else {
             $field_error = 'правило не задано';
         }
@@ -81,8 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors[$field] = $field_error;
         }
     }
-
-
     if (empty($errors)) {
         $new_post_id = null;
 

@@ -14,12 +14,13 @@ $title = $current_post_type === 'quote' ? 'Текст цитаты' : 'Текс�
         class="adding-post__label form__label"
         for="post-text"> <?= $title ?><span
             class="form__input-required">*</span></label>
-    <div class="form__input-section">
+    <div
+        class="form__input-section <?= $error ? 'form__input-section--error' : '' ?>">
         <textarea
             class="adding-post__textarea form__textarea form__input"
             id="post-text"
-            value="<?= $value ?>"
-            placeholder="Введите текст публикации"></textarea>
+            name="text"
+            placeholder="Введите текст публикации"><?= $value ?></textarea>
         <button
             class="form__error-button button"
             type="button">!<span

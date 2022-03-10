@@ -66,6 +66,7 @@ function validate_quote_author($value)
  */
 function validate_post_text($value)
 {
+    var_dump('$value' . $value);
     $len = strlen($value);
 
     if (empty($value)) {

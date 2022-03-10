@@ -19,10 +19,9 @@ $error_field_titles = [
     'photo-url' => 'Ссылка из интернета',
     'userpic-file-photo' => 'Изображение',
     'video-url' => 'Ссылка Youtube',
-    'post-text' => 'Текст поста',
-    'quote-text' => 'Текст цитаты',
+    'text' => $current_post_type === 'text' ? 'Текст поста' : 'Текст цитаты',
     'quote-author' => 'Автор цитаты',
-    'post-link' => 'Ссылка'
+    'url' => 'Ссылка'
 ];
 
 ?>
@@ -135,7 +134,7 @@ $error_field_titles = [
                             </div>
                         </form>
                     </section>
-                    
+
                 </div>
             </div>
         </div>
