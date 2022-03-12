@@ -126,24 +126,34 @@ function get_posts($con, $post_type)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function save_post_photo($con, $post_data)
+function save_post($con, $post_data)
 {
     $sql = "INSERT INTO posts SET
     content_type_id= ?,
     author_id= ?,
     title=?,
-    image_url=?;";
+    image_url=?,
+    video_url=?,
+    text=?,
+    author_quote=?,
+    url=?";
 
+    var_dump($post_data['url']);
     $stmt = db_get_prepare_stmt($con, $sql, [
         $post_data['content_type_id'],
         $post_data['author_id'],
         $post_data['title'],
-        $post_data['image_url'],
+        $post_data['image_url'] ?? null,
+        $post_data['video_url'] ?? null,
+        $post_data['text'] ?? null,
+        $post_data['author_quote'] ?? null,
+        $post_data['url'] ?? null,
     ]);
     mysqli_stmt_execute($stmt);
 
     return mysqli_insert_id($con);
 }
+
 
 /**
  * Добавление тега к посту

@@ -20,7 +20,7 @@ $error_field_titles = [
     'userpic-file-photo' => 'Изображение',
     'video-url' => 'Ссылка Youtube',
     'text' => $current_post_type === 'text' ? 'Текст поста' : 'Текст цитаты',
-    'quote-author' => 'Автор цитаты',
+    'author_quote' => 'Автор цитаты',
     'url' => 'Ссылка'
 ];
 

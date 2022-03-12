@@ -483,6 +483,7 @@ function format_post_data(array $post): array
         $content = $post['url'];
     }
 
+    var_dump($post);
     return [
         'id' => $post['id'],
         'title' => $post['title'],

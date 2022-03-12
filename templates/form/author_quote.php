@@ -10,16 +10,16 @@
     class="adding-post__textarea-wrapper form__input-wrapper">
     <label
         class="adding-post__label form__label"
-        for="quote-author">Автор <span
+        for="author_quote">Автор <span
             class="form__input-required">*</span></label>
     <div
         class="form__input-section  <?= $error ? 'form__input-section--error' : '' ?>"
     ">
     <input
         class="adding-post__input form__input"
-        id="quote-author" type="text"
+        id="author_quote" type="text"
         value="<?= $value ?>"
-        name="quote-author">
+        name="author_quote">
     <button
         class="form__error-button button"
         type="button">!<span

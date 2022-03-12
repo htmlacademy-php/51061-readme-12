@@ -39,12 +39,18 @@ if (isset($_GET['id'])) {
 
         $title = 'readme:' . $post['title'];
 
-        $content = include_template('post-detail/layout.php', compact("post", "author_info"));
+        $content = include_template(
+            'post-detail/layout.php',
+            compact("post", "author_info")
+        );
     }
 }
 
 
-$page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
+$page = include_template(
+    "layout.php",
+    compact("content", "title", "is_auth", "user_name")
+);
 
 print($page);
 ?>

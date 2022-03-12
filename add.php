@@ -45,7 +45,7 @@ $forms_fields_rules = [
     'tags' => 'validate_hashtag',
     'text' => $current_post_type === 'text' ? 'validate_post_text' : 'validate_quote',
     'video-url' => 'validate_youtube_url',
-    'quote-author' => 'validate_quote_author',
+    'author_quote' => 'validate_quote_author',
     'url' => 'validate_url'
 ];
 
@@ -53,7 +53,7 @@ $forms_config_by_type = [
     'photo' => ['heading', 'photo-url', 'tags'],
     'video' => ['heading', 'video-url', 'tags'],
     'text' => ['heading', 'text', 'tags'],
-    'quote' => ['heading', 'text', 'quote-author', 'tags'],
+    'quote' => ['heading', 'text', 'author_quote', 'tags'],
     'link' => ['heading', 'url', 'tags']
 ];
 
@@ -86,11 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $post = [
             'title' => $_POST['heading'],
-            'content_type_id' => $post_types_ids['post-photo'],
+            'content_type_id' => $post_types_ids['post-' . $current_post_type],
             'author_id' => '1',
         ];
 
         switch ($current_post_type) {
+//        'link'
             case 'photo':
                 if (has_file('userpic-file-photo')) {
                     $savedFileUrl = save_photo_to_server(
@@ -100,9 +101,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     $post['image_url'] = $_POST['photo-url'];
                 }
-                $new_post_id = save_post_photo($con, $post);
+                break;
+            case 'video':
+                $post['video_url'] = $_POST['video-url'];
+                break;
+            case 'text':
+                $post['text'] = $_POST['text'];
+                break;
+            case 'link':
+                $post['url'] = $_POST['url'];
+                break;
+            case 'quote':
+                $post['text'] = $_POST['text'];
+                $post['author_quote'] = $_POST['author_quote'];
                 break;
         }
+
+        $new_post_id = save_post($con, $post);
 
         if ($new_post_id && isset($_POST['tags'])) {
             $hashtags = explode(' ', $_POST['tags']);
