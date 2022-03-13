@@ -13,6 +13,8 @@ $title = 'readme: добавление публикации';
 
 $current_post_type = 'photo';
 $add_post = true;
+$post_types = get_post_types($con);
+$post_types_ids = [];
 
 function get_post_val($name)
 {
@@ -23,9 +25,6 @@ if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
 }
 
-//Отправьте SQL-запрос для получения типов контента
-$post_types = get_post_types($con);
-$post_types_ids = [];
 
 foreach ($post_types as $type) {
     $post_types_ids[$type['icon_class']] = $type['id'];
@@ -91,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ];
 
         switch ($current_post_type) {
-//        'link'
             case 'photo':
                 if (has_file('userpic-file-photo')) {
                     $savedFileUrl = save_photo_to_server(

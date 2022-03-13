@@ -253,7 +253,6 @@ function extract_youtube_id($youtube_url)
             }
         }
     }
-    var_dump($id);
     return $id;
 }
 

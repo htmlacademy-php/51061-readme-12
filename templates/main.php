@@ -49,7 +49,8 @@ if ($current_post_type) {
                 </ul>
             </div>
             <div class="popular__filters filters">
-                <b class="popular__filters-caption filters__caption">Тип контента:</b>
+                <b class="popular__filters-caption filters__caption">Тип
+                    контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
                         <? $all_types_active_class = !isset($current_type) ? 'filters__button--active' : null ?>
@@ -66,8 +67,10 @@ if ($current_post_type) {
                             <a class="filters__button filters__button--photo button <?= $active_class ?>"
                                href="<?= $link ?>">
                                 <span class="visually-hidden">Фото</span>
-                                <svg class="filters__icon" width="22" height="18">
-                                    <use xlink:href="#icon-filter-<?= $type_name ?>"></use>
+                                <svg class="filters__icon" width="22"
+                                     height="18">
+                                    <use
+                                        xlink:href="#icon-filter-<?= $type_name ?>"></use>
                                 </svg>
                             </a>
                         </li>
@@ -80,56 +83,71 @@ if ($current_post_type) {
                 <?php foreach ($posts as $key => $post): ?>
                     <article class="popular__post post <?= $post['type'] ?>">
                         <header class="post__header">
-                            <a href="/post.php?id=<?= htmlspecialchars($post['id']) ?>">
+                            <a href="/post.php?id=<?= htmlspecialchars(
+                                $post['id']
+                            ) ?>">
                                 <h2><?= htmlspecialchars($post['title']) ?></h2>
                             </a>
                         </header>
                         <div class="post__main">
-                            <?php $safeTitle = htmlspecialchars($post['title']); ?>
-                            <?php $safeContent = htmlspecialchars($post['content']); ?>
+                            <?php $safe_title = htmlspecialchars(
+                                $post['title']
+                            ); ?>
+                            <?php $safe_content = htmlspecialchars(
+                                $post['content']
+                            ); ?>
                             <?php switch ($post['type']) {
                                 case "post-link":
                                     print(include_template('post/link.php', [
-                                        'title' => $safeTitle,
-                                        'content' => $safeContent
+                                        'title' => $safe_title,
+                                        'content' => $safe_content
                                     ]));
                                     break;
                                 case "post-text":
                                     print(include_template('post/text.php', [
-                                        'content' => $safeContent
+                                        'content' => $safe_content
                                     ]));
                                     break;
                                 case "post-video":
                                     print(include_template('post/video.php', [
-                                        'content' => $safeContent
+                                        'content' => $safe_content
                                     ]));
                                     break;
                                 case "post-photo":
                                     print(include_template('post/photo.php', [
-                                        'content' => $safeContent
+                                        'content' => $safe_content
                                     ]));
                                     break;
                                 case "post-quote":
                                     print(include_template('post/quote.php', [
-                                        'content' => $safeContent
+                                        'content' => $safe_content
                                     ]));
                                     break;
                             } ?>
                         </div>
                         <footer class="post__footer">
                             <div class="post__author">
-                                <a class="post__author-link" href="#" title="Автор">
+                                <a class="post__author-link" href="#"
+                                   title="Автор">
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
                                         <img class="post__author-avatar"
-                                             src="img/<?= htmlspecialchars($post['avatar']) ?>"
+                                             src="img/<?= htmlspecialchars(
+                                                 $post['avatar']
+                                             ) ?>"
                                              alt="Аватар пользователя">
                                     </div>
                                     <div class="post__info">
-                                        <b class="post__author-name"><?= htmlspecialchars($post['user_name']) ?></b>
-                                        <?php $post_date_str = generate_random_date($key); ?>
+                                        <b class="post__author-name"><?= htmlspecialchars(
+                                                $post['user_name']
+                                            ) ?></b>
+                                        <?php $post_date_str = generate_random_date(
+                                            $key
+                                        ); ?>
                                         <time class="post__time"
-                                              title='<?= date_create($post_date_str)->format('d.m.Y H:i') ?>'
+                                              title='<?= date_create(
+                                                  $post_date_str
+                                              )->format('d.m.Y H:i') ?>'
                                               datetime="<?= $post_date_str ?>">
                                             <?php
                                             $passed_time_title = get_passed_time_title(
@@ -145,21 +163,29 @@ if ($current_post_type) {
                             </div>
                             <div class="post__indicators">
                                 <div class="post__buttons">
-                                    <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                                        <svg class="post__indicator-icon" width="20" height="17">
+                                    <a class="post__indicator post__indicator--likes button"
+                                       href="#" title="Лайк">
+                                        <svg class="post__indicator-icon"
+                                             width="20" height="17">
                                             <use xlink:href="#icon-heart"></use>
                                         </svg>
-                                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20"
-                                             height="17">
-                                            <use xlink:href="#icon-heart-active"></use>
+                                        <svg
+                                            class="post__indicator-icon post__indicator-icon--like-active"
+                                            width="20"
+                                            height="17">
+                                            <use
+                                                xlink:href="#icon-heart-active"></use>
                                         </svg>
                                         <span>0</span>
                                         <span class="visually-hidden">количество лайков</span>
                                     </a>
-                                    <a class="post__indicator post__indicator--comments button" href="#"
+                                    <a class="post__indicator post__indicator--comments button"
+                                       href="#"
                                        title="Комментарии">
-                                        <svg class="post__indicator-icon" width="19" height="17">
-                                            <use xlink:href="#icon-comment"></use>
+                                        <svg class="post__indicator-icon"
+                                             width="19" height="17">
+                                            <use
+                                                xlink:href="#icon-comment"></use>
                                         </svg>
                                         <span>0</span>
                                         <span class="visually-hidden">количество комментариев</span>

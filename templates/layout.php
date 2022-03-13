@@ -218,7 +218,7 @@
 
                             <? else : ?>
                                 <a class="header__post-button button button--transparent"
-                                   href="adding-post.html">Пост</a>
+                                   href="add.php">Пост</a>
                             <? endif; ?>
                         </li>
                     </ul>
