@@ -44,7 +44,6 @@ function get_post($con, $id)
     mysqli_stmt_bind_param($stmt, 's', $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    var_dump(mysqli_error($con));
     if (!$result) {
         show_query_error($con, "Не удалось загрузить данные о посте");
         return;
@@ -138,7 +137,6 @@ function save_post($con, $post_data)
     author_quote=?,
     url=?";
 
-    var_dump($post_data['url']);
     $stmt = db_get_prepare_stmt($con, $sql, [
         $post_data['content_type_id'],
         $post_data['author_id'],
