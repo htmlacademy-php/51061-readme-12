@@ -3,12 +3,12 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $title string
  * @var $user_name mysqli
  * @var $is_auth boolean
  */
 require_once('bootstrap.php');
 
+$title = 'readme: популярное';
 $current_post_type = '';
 
 if (isset($_GET['type'])) {
@@ -19,7 +19,7 @@ if (isset($_GET['type'])) {
 $post_types = get_post_types($con);
 
 //Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
-$postsData = get_posts($con, $current_post_type);
+$posts_data = get_posts($con, $current_post_type);
 
 //Используйте эти данные для показа списка постов и списка типов контента на главной странице.
 //-- списка постов - преобразуем вывод постов для отображения страницы
@@ -46,10 +46,21 @@ $posts = array_map(function ($value) {
         "user_name" => $value['user_name'],
         "avatar" => $value['avatar']
     ];
-}, $postsData);
+}, $posts_data);
 
-$content = include_template('main.php', compact("posts", "current_time", "post_types", "current_post_type"));
-$page = include_template("layout.php", compact("content", "title", "is_auth", "user_name"));
+$content = include_template(
+    'main.php',
+    compact(
+        "posts",
+        "current_time",
+        "post_types",
+        "current_post_type"
+    )
+);
+$page = include_template(
+    "layout.php",
+    compact("content", "title", "is_auth", "user_name")
+);
 
 print($page);
 ?>

@@ -125,4 +125,78 @@ function get_posts($con, $post_type)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+function save_post($con, $post_data)
+{
+    $sql = "INSERT INTO posts SET
+    content_type_id= ?,
+    author_id= ?,
+    title=?,
+    image_url=?,
+    video_url=?,
+    text=?,
+    author_quote=?,
+    url=?";
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        $post_data['content_type_id'],
+        $post_data['author_id'],
+        $post_data['title'],
+        $post_data['image_url'] ?? null,
+        $post_data['video_url'] ?? null,
+        $post_data['text'] ?? null,
+        $post_data['author_quote'] ?? null,
+        $post_data['url'] ?? null,
+    ]);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_insert_id($con);
+}
+
+
+/**
+ * Добавление тега к посту
+ * @param mysqli $con Ресурс соединения
+ * @param string $tag
+ * @return string|false - id тега
+ */
+function saveTag(mysqli $con, string $tag)
+{
+    $sql = "INSERT INTO hashtags SET name=?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
+    mysqli_stmt_execute($stmt);
+    $tag_id = mysqli_insert_id($con);
+    return $tag_id;
+}
+
+/**
+ * Добавление тега к посту
+ * @param mysqli $mysql Ресурс соединения
+ * @param int $tag_id
+ * @param int $post_id
+ */
+function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
+{
+    $sql = "INSERT INTO post_hashtags SET
+        post_id=?,
+        hashtag_id=?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+}
+
+/**
+ * Добавление тега к посту
+ * @param mysqli $mysql Ресурс соединения
+ * @param string $tag
+ */
+function get_tag_id(mysqli $con, string $tag)
+{
+    $sql = "SELECT id from hashtags WHERE name = ?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt,);
+    $row = mysqli_fetch_assoc($res);
+    return $row['id'];
+}
+
 ?>
