@@ -1,8 +1,5 @@
 <?php /** @noinspection ALL */
 
-/** @noinspection ALL */
-
-/** @noinspection ALL */
 
 /**
  * @var $title string

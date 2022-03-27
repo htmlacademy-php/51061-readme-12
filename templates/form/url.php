@@ -1,6 +1,5 @@
 <?php /** @noinspection ALL */
 
-/** @noinspection ALL */
 
 /**
  * @var $error string

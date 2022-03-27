@@ -1,14 +1,5 @@
 <?php /** @noinspection ALL */
 
-/** @noinspection ALL */
-
-/** @noinspection ALL */
-
-/** @noinspection ALL */
-
-/** @noinspection ALL */
-
-/** @noinspection ALL */
 
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
