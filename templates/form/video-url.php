@@ -1,4 +1,7 @@
-<?php
+<?php /** @noinspection ALL */
+
+/** @noinspection ALL */
+
 /**
  * @var $error string
  * @var $current_post_type string
@@ -8,24 +11,24 @@
 ?>
 
 <div
-    class="adding-post__input-wrapper form__input-wrapper">
+        class="adding-post__input-wrapper form__input-wrapper">
     <label
-        class="adding-post__label form__label"
-        for="video-url">Ссылка youtube
+            class="adding-post__label form__label"
+            for="video-url">Ссылка youtube
         <span
-            class="form__input-required">*</span></label>
+                class="form__input-required">*</span></label>
     <div
-        class="form__input-section <?= $error ? 'form__input-section--error' : '' ?>">
+            class="form__input-section <?= $error ? 'form__input-section--error' : '' ?>">
         <input
-            class="adding-post__input form__input"
-            id="video-url" type="text"
-            name="video-url"
-            value="<?= $value ?>"
-            placeholder="Введите ссылку">
+                class="adding-post__input form__input"
+                id="video-url" type="text"
+                name="video-url"
+                value="<?= $value ?>"
+                placeholder="Введите ссылку">
         <button
-            class="form__error-button button"
-            type="button">!<span
-                class="visually-hidden">Информация об ошибке</span>
+                class="form__error-button button"
+                type="button">!<span
+                    class="visually-hidden">Информация об ошибке</span>
         </button>
         <? if (!empty($error)) : ?>
             <div class="form__error-text">

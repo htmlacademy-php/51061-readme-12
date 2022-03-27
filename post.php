@@ -4,7 +4,7 @@
  * @var $con mysqli
  * @var $current_time string
  * @var $user_name mysqli
- * @var $is_auth boolean
+ * @var $is_auth bool
  */
 require_once('bootstrap.php');
 
@@ -17,7 +17,7 @@ $content = '';
 $post = null;
 
 if (isset($_GET['id'])) {
-    $post_id = mysqli_real_escape_string($con, $_GET['id']);
+    $post_id = $_GET['id'];
 
     $post_data = get_post($con, $post_id);
 
@@ -41,17 +41,15 @@ if (isset($_GET['id'])) {
 
         $content = include_template(
             'post-detail/layout.php',
-            compact("post", "author_info")
+            compact('post', 'author_info')
         );
     }
 }
 
 
 $page = include_template(
-    "layout.php",
-    compact("content", "title", "is_auth", "user_name")
+    'layout.php',
+    compact('content', 'title', 'is_auth', 'user_name')
 );
 
 print($page);
-?>
-

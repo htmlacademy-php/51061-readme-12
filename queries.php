@@ -194,9 +194,7 @@ function get_tag_id(mysqli $con, string $tag)
     $sql = "SELECT id from hashtags WHERE name = ?";
     $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt,);
+    $res = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_assoc($res);
     return $row['id'];
 }
-
-?>
