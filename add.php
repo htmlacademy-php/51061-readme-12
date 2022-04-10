@@ -7,6 +7,7 @@
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
+require_once('helpers/helpers');
 require_once('helpers/validate-functions.php');
 
 $title = 'readme: добавление публикации';
@@ -15,11 +16,6 @@ $current_post_type = 'photo';
 $add_post = true;
 $post_types = get_post_types($con);
 $post_types_ids = [];
-
-function get_post_val($name)
-{
-    return $_POST[$name] ?? '';
-}
 
 if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);

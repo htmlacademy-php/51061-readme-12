@@ -505,3 +505,12 @@ function save_photo_to_server($file): string
     return $file_url;
 }
 
+/**
+ * Получить значение POST запроса по ключу
+ * @param  $name string ключ
+ * @return mixed
+ */
+function get_post_val(string $name)
+{
+    return $_POST[$name] ?? '';
+}
