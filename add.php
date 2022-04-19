@@ -7,7 +7,7 @@
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
-require_once('helpers/helpers');
+require_once('helpers/helpers.php');
 require_once('helpers/validate-functions.php');
 
 $title = 'readme: добавление публикации';

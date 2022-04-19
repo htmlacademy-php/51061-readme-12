@@ -486,7 +486,7 @@ function format_post_data(array $post): array
 
 function has_file($file_name)
 {
-    return isset($_FILES[$file_name]) && $_FILES['userpic-file-photo']['error'] != UPLOAD_ERR_NO_FILE_ID;
+    return isset($_FILES[$file_name]) && $_FILES[$file_name]['error'] != UPLOAD_ERR_NO_FILE_ID;
 }
 
 /**

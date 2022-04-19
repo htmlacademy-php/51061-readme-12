@@ -6,6 +6,7 @@
  * @var $type string
  * @var $value string
  * @var $error string
+ * @var $placeholder string
  */
 
 ?>
