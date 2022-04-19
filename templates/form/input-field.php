@@ -22,7 +22,7 @@
         <input class="<?= $class ?>__input form__input"
                id="<?= $class ?>-<?= $label ?>" type="<?= $type ?>"
                value='<?= $value ?>'
-               name="<?= $label ?>" placeholder="Укажите эл.почту">
+               name="<?= $label ?>" placeholder="<?= $placeholder ?>">
         <button class="form__error-button button"
                 type="button">!<span
                     class="visually-hidden">Информация об ошибке</span>
