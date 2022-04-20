@@ -3,11 +3,13 @@
 $current_time = date_create();
 $current_timestamp = $current_time->getTimestamp();
 const TIME_POINTS = [
-    "minute" => 60,
-    "hour" => 3600,
-    "day" => 86400,
-    "week" => 604800
+    'minute' => 60,
+    'hour' => 3600,
+    'day' => 86400,
+    'week' => 604800
 ];
+
+const UPLOAD_ERR_NO_FILE_ID = 4;
 
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
@@ -60,20 +62,16 @@ function db_get_prepare_stmt($link, $sql, $data = [])
 
             if (is_int($value)) {
                 $type = 'i';
-            } else {
-                if (is_string($value)) {
-                    $type = 's';
-                } else {
-                    if (is_double($value)) {
-                        $type = 'd';
-                    }
-                }
+            }
+            if (is_string($value)) {
+                $type = 's';
+            }
+            if (is_double($value)) {
+                $type = 'd';
             }
 
-            if ($type) {
-                $types .= $type;
-                $stmt_data[] = $value;
-            }
+            $types .= $type;
+            $stmt_data[] = $value;
         }
 
         $values = array_merge([$stmt, $types], $stmt_data);
@@ -184,13 +182,13 @@ function check_youtube_url($url)
     restore_error_handler();
 
     if (!is_array($headers)) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return 'Видео по такой ссылке не найдено. Проверьте ссылку на видео';
     }
 
     $err_flag = strpos($headers[0], '200') ? 200 : 404;
 
     if ($err_flag !== 200) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return 'Видео по такой ссылке не найдено. Проверьте ссылку на видео';
     }
 
     return true;
@@ -203,11 +201,11 @@ function check_youtube_url($url)
  */
 function embed_youtube_video($youtube_url)
 {
-    $res = "";
+    $res = '';
     $id = extract_youtube_id($youtube_url);
 
     if ($id) {
-        $src = "https://www.youtube.com/embed/" . $id;
+        $src = 'https://www.youtube.com/embed/' . $id;
         $res = '<iframe width="760" height="400" src="' . $src . '" frameborder="0"></iframe>';
     }
 
@@ -219,13 +217,13 @@ function embed_youtube_video($youtube_url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_cover($youtube_url = "")
+function embed_youtube_cover($youtube_url = '')
 {
-    $res = "";
+    $res = '';
     $id = extract_youtube_id($youtube_url);
 
     if ($id) {
-        $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
+        $src = sprintf('https://img.youtube.com/vi/%s/mqdefault.jpg', $id);
         $res = '<img alt="youtube cover" width="320" height="120" src="' . $src . '" />';
     }
 
@@ -247,10 +245,8 @@ function extract_youtube_id($youtube_url)
         if ($parts['path'] == '/watch') {
             parse_str($parts['query'], $vars);
             $id = $vars['v'] ?? null;
-        } else {
-            if ($parts['host'] == 'youtu.be') {
-                $id = substr($parts['path'], 1);
-            }
+        } elseif ($parts['host'] == 'youtu.be') {
+            $id = substr($parts['path'], 1);
         }
     }
     return $id;
@@ -296,20 +292,17 @@ function generate_random_date($index)
  */
 function shouldWeShowAsHoursAgo(int $time): bool
 {
-    return $time > TIME_POINTS['hour']
-        && $time <= TIME_POINTS['day'];
+    return $time > TIME_POINTS['hour'] && $time <= TIME_POINTS['day'];
 }
 
 function shouldWeShowAsDaysAgo(int $time): bool
 {
-    return $time > TIME_POINTS['day']
-        && $time <= TIME_POINTS['week'];
+    return $time > TIME_POINTS['day'] && $time <= TIME_POINTS['week'];
 }
 
 function shouldWeShowAsWeeksAgo(int $time): bool
 {
-    return $time > TIME_POINTS['week']
-        && ($time <= (TIME_POINTS['week'] * 5));
+    return $time > TIME_POINTS['week'] && ($time <= (TIME_POINTS['week'] * 5));
 }
 
 function shouldWeShowMonthAgo(int $time): bool
@@ -337,13 +330,13 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
     $diff = $current_timestamp - $post_date;
 
     switch ($diff) {
-        case ($diff < TIME_POINTS["hour"]): //если до текущего времени прошло меньше 60 минут, то формат будет вида «% минут назад»;
-            $past_time = floor($diff / TIME_POINTS["minute"]);
+        case ($diff < TIME_POINTS['hour']): //если до текущего времени прошло меньше 60 минут, то формат будет вида «% минут назад»;
+            $past_time = floor($diff / TIME_POINTS['minute']);
             $plural_form = get_noun_plural_form(
                 $past_time,
-                "минута",
-                "минуты",
-                "минут"
+                'минута',
+                'минуты',
+                'минут'
             );
             break;
         case (shouldWeShowAsHoursAgo(
@@ -352,9 +345,9 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
             $past_time = floor($diff / TIME_POINTS['hour']);
             $plural_form = get_noun_plural_form(
                 $past_time,
-                "час",
-                "часы",
-                "часов"
+                'час',
+                'часа',
+                'часов'
             );
             break;
         case (shouldWeShowAsDaysAgo(
@@ -363,9 +356,9 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
             $past_time = floor($diff / TIME_POINTS['day']);
             $plural_form = get_noun_plural_form(
                 $past_time,
-                "день",
-                "дня",
-                "дней"
+                'день',
+                'дня',
+                'дней'
             );
             break;
         case (shouldWeShowAsWeeksAgo(
@@ -374,9 +367,9 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
             $past_time = floor($diff / TIME_POINTS['week']);
             $plural_form = get_noun_plural_form(
                 $past_time,
-                "неделя",
-                "недели",
-                "недель"
+                'неделя',
+                'недели',
+                'недель'
             );
             break;
         case (shouldWeShowMonthAgo($diff)) :
@@ -387,15 +380,15 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
             );
             $plural_form = get_noun_plural_form(
                 $past_time,
-                "месяц",
-                "месяца",
-                "месяцев"
+                'месяц',
+                'месяца',
+                'месяцев'
             );
             break;
     }
 
     if (isset($past_time) && isset($plural_form)) {
-        return $past_time . " " . $plural_form . " назад";
+        return $past_time . ' ' . $plural_form . ' назад';
     }
     return false;
 }
@@ -437,7 +430,7 @@ function trunc_text(string $text, int $length = 300): string
     }
 
     $output_array = array_slice($words_array, 0, $last_word_index);
-    $output_string = implode(' ', $output_array) . "...";
+    $output_string = implode(' ', $output_array) . '...';
     return $output_string;
 }
 
@@ -451,14 +444,12 @@ function trunc_text(string $text, int $length = 300): string
 function short_content(
     string $text,
     int $length = 300,
-    string $full_content_link = "#"
+    string $full_content_link = '#'
 ): string {
-    $output = is_need_trunc($text, $length)
-        ? '<p>' . trunc_text(
+    $output = is_need_trunc($text, $length) ? '<p>' . trunc_text(
             $text,
             $length
-        ) . '</p><a class="post-text__more-link" href=' . $full_content_link . '>Читать далее</a>'
-        : '<p>' . $text . '</p>';
+        ) . '</p><a class="post-text__more-link" href=' . $full_content_link . '>Читать далее</a>' : '<p>' . $text . '</p>';
 
     return $output;
 }
@@ -486,16 +477,16 @@ function format_post_data(array $post): array
         'id' => $post['id'],
         'title' => $post['title'],
         'author_quote' => $post['author_quote'],
-        "type" => $post['type'],
-        "content" => $content,
-        "user_name" => $post['user_name'],
-        "avatar" => $post['avatar']
+        'type' => $post['type'],
+        'content' => $content,
+        'user_name' => $post['user_name'],
+        'avatar' => $post['avatar']
     ];
 }
 
 function has_file($file_name)
 {
-    return isset($_FILES[$file_name]) && $_FILES['userpic-file-photo']['error'] != 4;
+    return isset($_FILES[$file_name]) && $_FILES[$file_name]['error'] != UPLOAD_ERR_NO_FILE_ID;
 }
 
 /**
@@ -514,3 +505,12 @@ function save_photo_to_server($file): string
     return $file_url;
 }
 
+/**
+ * Получить значение POST запроса по ключу
+ * @param  $name string ключ
+ * @return mixed
+ */
+function get_post_val(string $name)
+{
+    return $_POST[$name] ?? '';
+}

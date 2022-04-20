@@ -4,7 +4,7 @@
  * @var $con mysqli
  * @var $current_time string
  * @var $user_name mysqli
- * @var $is_auth boolean
+ * @var $is_auth bool
  */
 require_once('bootstrap.php');
 
@@ -63,5 +63,5 @@ $page = include_template(
 );
 
 print($page);
-?>
+
 

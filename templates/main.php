@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection ALL */
+
 
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
@@ -70,7 +71,7 @@ if ($current_post_type) {
                                 <svg class="filters__icon" width="22"
                                      height="18">
                                     <use
-                                        xlink:href="#icon-filter-<?= $type_name ?>"></use>
+                                            xlink:href="#icon-filter-<?= $type_name ?>"></use>
                                 </svg>
                             </a>
                         </li>
@@ -170,11 +171,11 @@ if ($current_post_type) {
                                             <use xlink:href="#icon-heart"></use>
                                         </svg>
                                         <svg
-                                            class="post__indicator-icon post__indicator-icon--like-active"
-                                            width="20"
-                                            height="17">
+                                                class="post__indicator-icon post__indicator-icon--like-active"
+                                                width="20"
+                                                height="17">
                                             <use
-                                                xlink:href="#icon-heart-active"></use>
+                                                    xlink:href="#icon-heart-active"></use>
                                         </svg>
                                         <span>0</span>
                                         <span class="visually-hidden">количество лайков</span>
@@ -185,7 +186,7 @@ if ($current_post_type) {
                                         <svg class="post__indicator-icon"
                                              width="19" height="17">
                                             <use
-                                                xlink:href="#icon-comment"></use>
+                                                    xlink:href="#icon-comment"></use>
                                         </svg>
                                         <span>0</span>
                                         <span class="visually-hidden">количество комментариев</span>

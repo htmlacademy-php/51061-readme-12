@@ -25,9 +25,9 @@ function show_query_error($con, $description)
 
 function get_post_types($con)
 {
-    $result = mysqli_query($con, "SELECT * FROM types");
+    $result = mysqli_query($con, 'SELECT * FROM types');
     if (!$result) {
-        show_query_error($con, "Не удалось загрузить типы постов");
+        show_query_error($con, 'Не удалось загрузить типы постов');
         return;
     }
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -45,7 +45,7 @@ function get_post($con, $id)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-        show_query_error($con, "Не удалось загрузить данные о посте");
+        show_query_error($con, 'Не удалось загрузить данные о посте');
         return;
     }
     return mysqli_fetch_assoc($result);
@@ -66,7 +66,7 @@ function get_author_info($con, $id)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-        show_query_error($con, "Не удалось загрузить данные о пользователе");
+        show_query_error($con, 'Не удалось загрузить данные о пользователе');
         return;
     }
     return mysqli_fetch_assoc($result);
@@ -83,7 +83,7 @@ function get_subscribers_count($con, $author_id)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-        show_query_error($con, "Не удалось загрузить количество подписчиков");
+        show_query_error($con, 'Не удалось загрузить количество подписчиков');
         return;
     }
     return mysqli_fetch_assoc($result)['count'];
@@ -100,7 +100,7 @@ function get_posts_count($con, $author_id)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-        show_query_error($con, "Не удалось загрузить количество подписчиков");
+        show_query_error($con, 'Не удалось загрузить количество подписчиков');
         return;
     }
     return mysqli_fetch_assoc($result)['count'];
@@ -119,7 +119,7 @@ function get_posts($con, $post_type)
     $result = mysqli_query($con, $query);
 
     if (!$result) {
-        show_query_error($con, "Не удалось получить список постов");
+        show_query_error($con, 'Не удалось получить список постов');
         return;
     }
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -127,7 +127,7 @@ function get_posts($con, $post_type)
 
 function save_post($con, $post_data)
 {
-    $sql = "INSERT INTO posts SET
+    $sql = 'INSERT INTO posts SET
     content_type_id= ?,
     author_id= ?,
     title=?,
@@ -135,7 +135,7 @@ function save_post($con, $post_data)
     video_url=?,
     text=?,
     author_quote=?,
-    url=?";
+    url=?';
 
     $stmt = db_get_prepare_stmt($con, $sql, [
         $post_data['content_type_id'],
@@ -161,11 +161,10 @@ function save_post($con, $post_data)
  */
 function saveTag(mysqli $con, string $tag)
 {
-    $sql = "INSERT INTO hashtags SET name=?";
+    $sql = 'INSERT INTO hashtags SET name=?';
     $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
     mysqli_stmt_execute($stmt);
-    $tag_id = mysqli_insert_id($con);
-    return $tag_id;
+    return mysqli_insert_id($con);
 }
 
 /**
@@ -176,9 +175,9 @@ function saveTag(mysqli $con, string $tag)
  */
 function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
 {
-    $sql = "INSERT INTO post_hashtags SET
+    $sql = 'INSERT INTO post_hashtags SET
         post_id=?,
-        hashtag_id=?";
+        hashtag_id=?';
     $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -191,12 +190,60 @@ function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
  */
 function get_tag_id(mysqli $con, string $tag)
 {
-    $sql = "SELECT id from hashtags WHERE name = ?";
+    $sql = 'SELECT id from hashtags WHERE name = ?';
     $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt,);
+    $res = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_assoc($res);
     return $row['id'];
 }
 
-?>
+/**
+ * Проверка логина или пароля
+ * @param mysqli $mysql Ресурс соединения
+ * @param array{login:string, email:string} $data
+ * @return boolean
+ */
+function is_email_or_login_available(mysqli $con, array $data)
+{
+    $sql = 'SELECT * from users WHERE';
+    if (isset($data['email'])) {
+        $sql = $sql . ' email = ?';
+        $stmt = db_get_prepare_stmt($con, $sql, [$data['email']]);
+    }
+
+    if (isset($data['login'])) {
+        $sql = $sql . ' login = ?';
+        $stmt = db_get_prepare_stmt($con, $sql, [$data['login']]);
+    }
+
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($res);
+
+    return empty($row);
+}
+
+/**
+ * Создание пользователя
+ * @param mysqli $con Ресурс соединения
+ * @param array{email:string,login:string,password:string,avatar_url:string} $user_data - данные пользователя
+ * @return string|false - id юзера
+ */
+function create_user(mysqli $con, array $user_data)
+{
+    $sql = 'INSERT INTO users SET email=?,login=?,password=?,avatar_url=?';
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'email' => $user_data['email'],
+        'login' => $user_data['login'],
+        'password' => $user_data['password'],
+        'avatar_url' => $user_data['avatar_url'] ?? null,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $user_id = mysqli_insert_id($con);
+    if (!$user_id) {
+        show_query_error($con, 'Не удалось создать пользователя');
+        return;
+    }
+    return mysqli_insert_id($con);
+}

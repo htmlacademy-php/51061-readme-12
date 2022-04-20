@@ -4,9 +4,10 @@
  * @var $con mysqli
  * @var $current_time string
  * @var $user_name mysqli
- * @var $is_auth boolean
+ * @var $is_auth bool
  */
 require_once('bootstrap.php');
+require_once('helpers/helpers.php');
 require_once('helpers/validate-functions.php');
 
 $title = 'readme: добавление публикации';
@@ -15,11 +16,6 @@ $current_post_type = 'photo';
 $add_post = true;
 $post_types = get_post_types($con);
 $post_types_ids = [];
-
-function get_post_val($name)
-{
-    return $_POST[$name] ?? "";
-}
 
 if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
@@ -128,8 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 add_tag_to_post($con, $tag_id, $new_post_id);
             }
         }
-        header("Location: /post.php?id=" . $new_post_id);
-    };
+        header('Location: /post.php?id=' . $new_post_id);
+    }
 }
 
 
@@ -152,24 +148,23 @@ foreach ($forms_config_by_type[$current_post_type] as $field) {
 $content = include_template(
     'adding-post.php',
     compact(
-        "current_time",
-        "post_types",
+        'current_time',
+        'post_types',
         'current_post_type',
         'errors',
         'form_fields'
     )
 );
 $page = include_template(
-    "layout.php",
+    'layout.php',
     compact(
-        "content",
-        "title",
-        "is_auth",
-        "user_name",
+        'content',
+        'title',
+        'is_auth',
+        'user_name',
         'add_post'
     )
 );
 
 print($page);
-?>
 
