@@ -1,5 +1,27 @@
 <?php
 
+const ERROR_TEMPLATES = [
+    'empty' => 'Это поле должно быть заполнено',
+    'is_short_text' => 'Значение должно быть от 3 до 50 символов',
+    'is_medium_text' => 'Значение должно быть от 3 до 150 символов',
+    'is_big_text' => 'Значение должно быть от 3 до 250 символов',
+];
+
+function is_short_text(string $len): bool
+{
+    return $len < 3 or $len > 50;
+}
+
+function is_medium_text(string $len): bool
+{
+    return $len < 3 or $len > 150;
+}
+
+function is_big_text(string $len): bool
+{
+    return $len < 3 or $len > 250;
+}
+
 
 /**
  * Функция для валидации поля заголовка при добавлении поста
@@ -12,11 +34,11 @@ function validate_heading($value)
     $len = strlen(trim($value));
 
     if (empty(trim($value))) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
-    if ($len < 5 or $len > 50) {
-        return "Значение должно быть от 5 до 50 символов";
+    if (is_short_text($len)) {
+        return ERROR_TEMPLATES['is_short_text'];
     }
 }
 
@@ -31,11 +53,11 @@ function validate_quote($value)
     $len = strlen(trim($value));
 
     if (empty(trim($value))) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     if ($len < 5 or $len > 70) {
-        return "Значение должно быть от 5 до 70 символов";
+        return 'Значение должно быть от 5 до 70 символов';
     }
 }
 
@@ -50,11 +72,11 @@ function validate_quote_author($value)
     $len = strlen($value);
 
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
-    if ($len < 2 or $len > 50) {
-        return "Значение должно быть от 2 до 50 символов";
+    if (is_short_text($len)) {
+        return ERROR_TEMPLATES['is_short_text'];
     }
 }
 
@@ -69,11 +91,11 @@ function validate_post_text($value)
     $len = strlen($value);
 
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
-    if ($len < 2 or $len > 250) {
-        return "Значение должно быть от 2 до 250 символов";
+    if (is_big_text($len)) {
+        return ERROR_TEMPLATES['is_big_text'];
     }
 }
 
@@ -88,11 +110,11 @@ function validate_message($value)
     $len = strlen($value);
 
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
-    if ($len < 2 or $len > 150) {
-        return "Значение должно быть от 2 до 150 символов";
+    if (is_medium_text($len)) {
+        return ERROR_TEMPLATES['is_medium_text'];
     }
 }
 
@@ -105,11 +127,11 @@ function validate_message($value)
 function validate_url($value, $required = true)
 {
     if ($required && empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     if ($value && filter_var($value, FILTER_VALIDATE_URL) === false) {
-        return "Была введена неправильная ссылка";
+        return 'Была введена неправильная ссылка';
     }
 }
 
@@ -121,7 +143,7 @@ function validate_url($value, $required = true)
 function validate_youtube_url($value)
 {
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     $res = check_youtube_url($value);
@@ -139,18 +161,18 @@ function validate_youtube_url($value)
 function validate_video($value)
 {
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     if (filter_var($value, FILTER_VALIDATE_URL) === false) {
-        return "Была введена неправильная ссылка";
+        return 'Была введена неправильная ссылка';
     }
 
-    $url = "https://www.youtube.com/oembed?url=" . $value;
-    $fop = fopen($url, "rb");
+    $url = 'https://www.youtube.com/oembed?url=' . $value;
+    $fop = fopen($url, 'rb');
     if (!$fop && $fop == false) {
-        return "Данное видео не найдено";
-    };
+        return 'Данное видео не найдено';
+    }
     restore_error_handler();
 }
 
@@ -211,8 +233,8 @@ function validate_hashtag($value)
     if (!empty($value)) {
         $len = strlen($value);
 
-        if ($len < 2 or $len > 250) {
-            return "Значение должно быть от 2 до 250 символов";
+        if (is_big_text($len)) {
+            return ERROR_TEMPLATES['is_big_text'];
         }
 
         $hashtags = explode(' ', $value);
@@ -245,17 +267,17 @@ function validate_hashtag($value)
 function validate_email($value)
 {
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     $len = strlen($value);
 
-    if ($len < 3 or $len > 150) {
-        return "Значение должно быть от 3 до 150 символов";
+    if (is_medium_text($len)) {
+        return ERROR_TEMPLATES['is_medium_text'];
     }
 
     if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-        return "Был введен неправильный Email";
+        return 'Был введен неправильный Email';
     }
 }
 
@@ -268,13 +290,13 @@ function validate_email($value)
 function validate_login($value)
 {
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     $len = strlen($value);
 
-    if ($len < 3 or $len > 50) {
-        return "Значение должно быть от 3 до 50 символов";
+    if (is_short_text($len)) {
+        return ERROR_TEMPLATES['is_short_text'];
     }
 }
 
@@ -287,13 +309,13 @@ function validate_login($value)
 function validate_password($value)
 {
     if (empty($value)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     $len = strlen($value);
 
     if ($len < 8 or $len > 150) {
-        return "Значение должно быть от 8 до 150 символов";
+        return 'Значение должно быть от 8 до 150 символов';
     }
 
     if (!preg_match('/^\S*$/', $value)) {
@@ -311,10 +333,10 @@ function validate_password($value)
 function validate_repeat_password($pass, $repeatPass)
 {
     if (empty($repeatPass)) {
-        return "Это поле должно быть заполнено";
+        return ERROR_TEMPLATES['empty'];
     }
 
     if ($pass !== $repeatPass) {
-        return "Пароли не совпадают";
+        return 'Пароли не совпадают';
     }
 }

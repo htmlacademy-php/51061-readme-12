@@ -58,26 +58,23 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $stmt_data = [];
 
         foreach ($data as $value) {
-            $type = 's';
-
             if (is_int($value)) {
                 $type = 'i';
-            }
-            if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
 
-            $types .= $type;
-            $stmt_data[] = $value;
+            if (isset($type)) {
+                $types .= $type;
+                $stmt_data[] = $value;
+            }
         }
 
         $values = array_merge([$stmt, $types], $stmt_data);
 
-        $func = 'mysqli_stmt_bind_param';
-        $func(...$values);
+        mysqli_stmt_bind_param(...$values);
 
         if (mysqli_errno($link) > 0) {
             $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error(
