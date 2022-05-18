@@ -1,5 +1,7 @@
 <?php
 
+require_once('helpers/helpers.php');
+
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  * @var $post_types array{icon_class:string ,title:string}
@@ -9,10 +11,6 @@
  * @var $form_fields array
  */
 
-function getPostVal($name)
-{
-    return $_POST[$name] ?? '';
-}
 
 $error_field_titles = [
     'heading' => 'Заголовок',

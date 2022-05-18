@@ -3,10 +3,11 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $user_name mysqli
+ * @var $user_name string
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
+require_once('authentication.php');
 
 
 $title = '';

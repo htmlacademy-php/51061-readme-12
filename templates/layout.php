@@ -10,6 +10,8 @@
  * @var $add_post bool
  */
 
+$current_url = $_SERVER['REQUEST_URI'];
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -145,14 +147,22 @@
                     <ul class="header__my-nav">
 
                         <li class="header__my-page header__my-page--popular">
-                            <a class="header__page-link header__page-link--active"
+                            <a class="header__page-link <?= strpos(
+                                $current_url,
+                                'popular'
+                            ) ? "header__page-link--active" : '' ?>"
+                               href="popular.php"
                                title="Популярный контент">
                                 <span
                                         class="visually-hidden">Популярный контент</span>
                             </a>
                         </li>
                         <li class="header__my-page header__my-page--feed">
-                            <a class="header__page-link" href="feed.html"
+                            <a class="header__page-link  <?= strpos(
+                                $current_url,
+                                'feed'
+                            ) ? "header__page-link--active" : '' ?>"
+                               href="feed.php"
                                title="Моя лента">
                                 <span class="visually-hidden">Моя лента</span>
                             </a>
@@ -211,7 +221,7 @@
 
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link"
-                                               href="#">
+                                               href="logout.php">
                           <span class="header__profile-nav-text">
                             Выход
                           </span>
@@ -234,7 +244,7 @@
                     <?php else: ?>
                         <li class="header__authorization">
                             <a class="header__user-button header__authorization-button button"
-                               href="/main">Вход</a>
+                               href="index.php">Вход</a>
                         </li>
                         <li>
                             <a class="header__user-button header__user-button--active header__register-button button">Регистрация</a>

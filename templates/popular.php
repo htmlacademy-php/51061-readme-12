@@ -11,6 +11,7 @@ $current_type = null;
 if ($current_post_type) {
     $current_type = explode('-', $current_post_type)[1];
 }
+
 ?>
 
 <section class="page__main page__main--popular">
@@ -62,7 +63,7 @@ if ($current_post_type) {
                     </li>
                     <? foreach ($post_types as $key => $type): ?>
                         <? $type_name = explode('-', $type['icon_class'])[1] ?>
-                        <? $link = '/?type=' . $type['icon_class'] ?>
+                        <? $link = '?type=' . $type['icon_class'] ?>
                         <? $active_class = $current_type == $type_name ? 'filters__button--active' : ''; ?>
                         <li class="popular__filters-item filters__item">
                             <a class="filters__button filters__button--photo button <?= $active_class ?>"
