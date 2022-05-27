@@ -21,5 +21,5 @@ if (isset($_SESSION['user'])) {
     $user_name = $_SESSION['user']['login'];
 }
 $current_time = date_create()->getTimestamp();
-
+$current_url = $_SERVER['REQUEST_URI'];
 

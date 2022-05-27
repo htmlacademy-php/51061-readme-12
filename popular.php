@@ -3,14 +3,17 @@
 /**
  * @var $con mysqli
  * @var $current_time string
+ * @var $current_url string
  * @var $user_name string
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
-require_once('authentication.php');
-
 $title = 'readme: популярное';
 $current_post_type = '';
+
+if (!$is_auth) {
+    header('Location: /index.php');
+}
 
 if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
@@ -58,9 +61,10 @@ $content = include_template(
         'current_post_type'
     )
 );
+
 $page = include_template(
     'layout.php',
-    compact('content', 'title', 'is_auth', 'user_name')
+    compact('content', 'title', 'is_auth', 'user_name', 'current_url')
 );
 
 print($page);

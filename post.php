@@ -7,8 +7,6 @@
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
-require_once('authentication.php');
-
 
 $title = '';
 $post_types = get_post_types($con);
@@ -16,6 +14,10 @@ $post_types = get_post_types($con);
 $post_id = '';
 $content = '';
 $post = null;
+
+if (!$is_auth) {
+    header('Location: /index.php');
+}
 
 if (isset($_GET['id'])) {
     $post_id = $_GET['id'];
