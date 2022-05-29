@@ -4,18 +4,21 @@
 /**
  * @var $title string
  * @var $user_name string
+ * @var $current_url string
  * @var $header mixed
  * @var $content mixed
  * @var $is_auth bool
  * @var $add_post bool
  */
 
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" contphp -i | grep
+    'Php Version'.ent="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title) ?></title>
     <link rel="stylesheet" href="css/main.css">
@@ -145,14 +148,22 @@
                     <ul class="header__my-nav">
 
                         <li class="header__my-page header__my-page--popular">
-                            <a class="header__page-link header__page-link--active"
+                            <a class="header__page-link <?= strpos(
+                                $current_url,
+                                'popular'
+                            ) ? "header__page-link--active" : '' ?>"
+                               href="popular.php"
                                title="Популярный контент">
                                 <span
                                         class="visually-hidden">Популярный контент</span>
                             </a>
                         </li>
                         <li class="header__my-page header__my-page--feed">
-                            <a class="header__page-link" href="feed.html"
+                            <a class="header__page-link  <?= strpos(
+                                $current_url,
+                                'feed'
+                            ) ? "header__page-link--active" : '' ?>"
+                               href="feed.php"
                                title="Моя лента">
                                 <span class="visually-hidden">Моя лента</span>
                             </a>
@@ -211,7 +222,7 @@
 
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link"
-                                               href="#">
+                                               href="logout.php">
                           <span class="header__profile-nav-text">
                             Выход
                           </span>
@@ -234,7 +245,7 @@
                     <?php else: ?>
                         <li class="header__authorization">
                             <a class="header__user-button header__authorization-button button"
-                               href="/main">Вход</a>
+                               href="index.php">Вход</a>
                         </li>
                         <li>
                             <a class="header__user-button header__user-button--active header__register-button button">Регистрация</a>

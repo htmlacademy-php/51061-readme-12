@@ -224,6 +224,23 @@ function is_email_or_login_available(mysqli $con, array $data)
     return empty($row);
 }
 
+
+/**
+ * Получени пользователя по логину
+ * @param mysqli $mysql Ресурс соединения
+ * @param string $login логин
+ * @return mixed
+ */
+function get_user(mysqli $con, string $login)
+{
+    $sql = 'SELECT * from users WHERE login=?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$login]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    return mysqli_fetch_assoc($res);
+}
+
 /**
  * Создание пользователя
  * @param mysqli $con Ресурс соединения

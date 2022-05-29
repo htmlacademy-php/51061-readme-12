@@ -3,7 +3,7 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $user_name mysqli
+ * @var $user_name string
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $user_id = create_user($con, $user_data);
         if ($user_id) {
-            header('Location: /main.php');
+            $_SESSION['user'] = $user_data;
+            header('Location: /feed.php');
         }
     }
 }

@@ -3,11 +3,10 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $user_name mysqli
+ * @var $user_name string
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
-
 
 $title = '';
 $post_types = get_post_types($con);
@@ -15,6 +14,10 @@ $post_types = get_post_types($con);
 $post_id = '';
 $content = '';
 $post = null;
+
+if (!$is_auth) {
+    header('Location: /index.php');
+}
 
 if (isset($_GET['id'])) {
     $post_id = $_GET['id'];

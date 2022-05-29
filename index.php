@@ -3,65 +3,55 @@
 /**
  * @var $con mysqli
  * @var $current_time string
- * @var $user_name mysqli
+ * @var $user_name string
  * @var $is_auth bool
+ * @var get_post_val function
  */
 require_once('bootstrap.php');
+require_once('helpers/validate-functions.php');
 
-$title = 'readme: популярное';
-$current_post_type = '';
+$errors = [];
 
-if (isset($_GET['type'])) {
-    $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
+if ($is_auth) {
+    header('Location: /feed.php');
 }
 
-//Отправьте SQL-запрос для получения типов контента
-$post_types = get_post_types($con);
-
-//Отправьте SQL-запрос для получения списка постов, объединённых с пользователями и отсортированный по популярности.
-$posts_data = get_posts($con, $current_post_type);
-
-//Используйте эти данные для показа списка постов и списка типов контента на главной странице.
-//-- списка постов - преобразуем вывод постов для отображения страницы
-$posts = array_map(function ($value) {
-    $content = $value['text'];
-
-    if ($value['image_url']) {
-        $content = $value['image_url'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['login'])) {
+        $error = validate_login($_POST['login']);
+        if ($error) {
+            $errors['login'] = $error;
+        }
     }
-    if ($value['video_url']) {
-        $content = $value['video_url'];
+    if (isset($_POST['password'])) {
+        $error = validate_password($_POST['password']);
+        if ($error) {
+            $errors['password'] = $error;
+        }
     }
-    if ($value['url']) {
-        $content = $value['url'];
+    if (empty($errors)) {
+        $user = get_user($con, $_POST['login']);
+        if (!$user) {
+            $errors['login'] = 'Пользователь не найден';
+        } elseif (password_verify(
+            $_POST['password'],
+            $user['password']
+        )) {
+            $_SESSION['user'] = $user;
+            header('Location: /feed.php');
+        } else {
+            $errors['password'] = 'Пароли не совпадают';
+        }
     }
-    if ($value['author_quote']) {
-        $content = $value['author_quote'];
-    }
-    return [
-        'id' => $value['id'],
-        'title' => $value['title'],
-        "type" => $value['type'],
-        "content" => $content,
-        "user_name" => $value['user_name'],
-        "avatar" => $value['avatar']
-    ];
-}, $posts_data);
+}
 
-$content = include_template(
-    'main.php',
-    compact(
-        "posts",
-        "current_time",
-        "post_types",
-        "current_post_type"
-    )
-);
 $page = include_template(
-    "layout.php",
-    compact("content", "title", "is_auth", "user_name")
+    'sign-in.php',
+    ['errors' => $errors]
 );
 
 print($page);
+
+?>
 
 

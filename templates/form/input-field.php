@@ -21,7 +21,7 @@
     >
         <input class="<?= $class ?>__input form__input"
                id="<?= $class ?>-<?= $label ?>" type="<?= $type ?>"
-               value='<?= $value ?>'
+               value="<?= $value ?>"
                name="<?= $label ?>" placeholder="<?= $placeholder ?>">
         <button class="form__error-button button"
                 type="button">!<span
