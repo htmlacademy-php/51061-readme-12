@@ -1,16 +1,11 @@
 <?php /** @noinspection ALL */
 
-
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
  * @var $current_post_type string
  */
-$current_type = null;
-if ($current_post_type) {
-    $current_type = explode('-', $current_post_type)[1];
-}
 
 ?>
 
@@ -55,16 +50,16 @@ if ($current_post_type) {
                     контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <? $all_types_active_class = !isset($current_type) ? 'filters__button--active' : null ?>
+                        <? $all_types_active_class = !isset($current_post_type) ? 'filters__button--active' : null ?>
                         <a class="filters__button filters__button--ellipse filters__button--all <?= $all_types_active_class ?>"
-                           href="/">
+                           href="/popular.php">
                             <span>Все</span>
                         </a>
                     </li>
                     <? foreach ($post_types as $key => $type): ?>
                         <? $type_name = explode('-', $type['icon_class'])[1] ?>
                         <? $link = '?type=' . $type['icon_class'] ?>
-                        <? $active_class = $current_type == $type_name ? 'filters__button--active' : ''; ?>
+                        <? $active_class = $current_post_type == $type_name ? 'filters__button--active' : ''; ?>
                         <li class="popular__filters-item filters__item">
                             <a class="filters__button filters__button--photo button <?= $active_class ?>"
                                href="<?= $link ?>">
@@ -84,48 +79,8 @@ if ($current_post_type) {
             <?php if (!empty($posts)) : ?>
                 <?php foreach ($posts as $key => $post): ?>
                     <article class="popular__post post <?= $post['type'] ?>">
-                        <header class="post__header">
-                            <a href="/post.php?id=<?= htmlspecialchars(
-                                $post['id']
-                            ) ?>">
-                                <h2><?= htmlspecialchars($post['title']) ?></h2>
-                            </a>
-                        </header>
                         <div class="post__main">
-                            <?php $safe_title = htmlspecialchars(
-                                $post['title']
-                            ); ?>
-                            <?php $safe_content = htmlspecialchars(
-                                $post['content']
-                            ); ?>
-                            <?php switch ($post['type']) {
-                                case "post-link":
-                                    print(include_template('post/link.php', [
-                                        'title' => $safe_title,
-                                        'content' => $safe_content
-                                    ]));
-                                    break;
-                                case "post-text":
-                                    print(include_template('post/text.php', [
-                                        'content' => $safe_content
-                                    ]));
-                                    break;
-                                case "post-video":
-                                    print(include_template('post/video.php', [
-                                        'content' => $safe_content
-                                    ]));
-                                    break;
-                                case "post-photo":
-                                    print(include_template('post/photo.php', [
-                                        'content' => $safe_content
-                                    ]));
-                                    break;
-                                case "post-quote":
-                                    print(include_template('post/quote.php', [
-                                        'content' => $safe_content
-                                    ]));
-                                    break;
-                            } ?>
+                            <?php print($post['template']) ?>
                         </div>
                         <footer class="post__footer">
                             <div class="post__author">

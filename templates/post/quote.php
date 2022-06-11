@@ -1,7 +1,15 @@
-<!--содержимое для поста-цитаты-->
+<?php
+
+/**
+ * @var $content string
+ * @var $title string
+ * @var $id string
+ */
+$safe_content = htmlspecialchars($content);
+?>
 <blockquote>
     <p>
-        <?= $content ?>
+        <?= $safe_content ?>
     </p>
     <cite>Неизвестный Автор</cite>
 </blockquote>

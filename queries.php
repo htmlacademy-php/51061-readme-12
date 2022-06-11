@@ -12,7 +12,8 @@ const SQL_POST_TEMPLATE = 'SELECT
                    p.url AS url,
                    p.author_id AS author_id,
                    p.author_quote AS author_quote,
-                   p.video_url AS video_url
+                   p.video_url AS video_url,
+                   p.created_at AS created_at
             FROM posts p
               JOIN users u on p.author_id = u.id
               JOIN types t on p.content_type_id = t.id';
@@ -264,3 +265,37 @@ function create_user(mysqli $con, array $user_data)
     }
     return mysqli_insert_id($con);
 }
+
+/**
+ * Создание пользователя
+ * @param mysqli $con Ресурс соединения
+ * @param array{email:string,login:string,password:string,avatar_url:string} $user_data - данные пользователя
+ * @return array - id юзера
+ */
+function search_posts(mysqli $con, string $text = '')
+{
+    $trim_text = trim($text);
+    $is_one_word = count(explode(' ', $trim_text)) == 1;
+    if ($is_one_word) {
+        $sql = SQL_POST_TEMPLATE . " WHERE p.title LIKE '%" . $trim_text . "%' or  p.text LIKE '%" . $trim_text . "%'";
+        $res = mysqli_query($con, $sql);
+        if (!$res) {
+            show_query_error($con, 'Не удалось получить список постов');
+            return;
+        }
+        return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    } else {
+        $sql = SQL_POST_TEMPLATE . ' WHERE MATCH(p.title, p.text) AGAINST(?)';
+        $stmt = db_get_prepare_stmt($con, $sql, [
+            'text' => $text,
+        ]);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        if (!$res) {
+            show_query_error($con, 'Не удалось получить список постов');
+            return;
+        }
+        return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    }
+}
+
