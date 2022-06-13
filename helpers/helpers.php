@@ -452,6 +452,34 @@ function short_content(
 }
 
 /**
+ * Получение шаблона по типу поста
+ * @param string $type тип поста
+ * @return string
+ */
+function get_post_template_by_type(string $type): string
+{
+    $template = '';
+    switch ($type) {
+        case 'post-link':
+            $template = 'post/link.php';
+            break;
+        case 'post-text':
+            $template = 'post/text.php';
+            break;
+        case 'post-video':
+            $template = 'post/video.php';
+            break;
+        case 'post-photo':
+            $template = 'post/photo.php';
+            break;
+        case 'post-quote':
+            $template = 'post/quote.php';
+            break;
+    }
+    return $template;
+}
+
+/**
  * Преобразовать данные из базы о посте для отображения
  * @param array $post Информация о посте
  * @return array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
@@ -477,7 +505,8 @@ function format_post_data(array $post): array
         'type' => $post['type'],
         'content' => $content,
         'user_name' => $post['user_name'],
-        'avatar' => $post['avatar']
+        'avatar' => $post['avatar'],
+        'created_at' => $post['created_at']
     ];
 }
 
