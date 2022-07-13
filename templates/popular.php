@@ -1,16 +1,18 @@
-<?php /** @noinspection ALL */
-
+<?php
 /**
  * @var $posts array{title:string ,id:string,content:string,type:string,user_name:string,avatar:string }
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
  * @var $current_post_type string
+ * @var $prev_page_url string
+ * @var $next_page_url string
+ * @var $is_last_page bool
+ * @var $is_first_page bool
  */
 
 ?>
 
 <section class="page__main page__main--popular">
-
     <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
     </div>
@@ -58,7 +60,7 @@
                     </li>
                     <? foreach ($post_types as $key => $type): ?>
                         <? $type_name = explode('-', $type['icon_class'])[1] ?>
-                        <? $link = '?type=' . $type['icon_class'] ?>
+                        <? $link = '?page=1&type=' . $type['icon_class'] ?>
                         <? $active_class = $current_post_type == $type_name ? 'filters__button--active' : ''; ?>
                         <li class="popular__filters-item filters__item">
                             <a class="filters__button filters__button--photo button <?= $active_class ?>"
@@ -66,8 +68,7 @@
                                 <span class="visually-hidden">Фото</span>
                                 <svg class="filters__icon" width="22"
                                      height="18">
-                                    <use
-                                            xlink:href="#icon-filter-<?= $type_name ?>"></use>
+                                    <use xlink:href="#icon-filter-<?= $type_name ?>"></use>
                                 </svg>
                             </a>
                         </li>
@@ -79,17 +80,26 @@
             <?php if (!empty($posts)) : ?>
                 <?php foreach ($posts as $key => $post): ?>
                     <article class="popular__post post <?= $post['type'] ?>">
+                        <header class="post__header">
+                            <h2><a href="/post.php?id=<?= htmlspecialchars(
+                                    $post['id']
+                                ) ?>"><?= htmlspecialchars(
+                                        $post['title']
+                                    ) ?></a>
+                            </h2>
+                        </header>
                         <div class="post__main">
                             <?php print($post['template']) ?>
                         </div>
                         <footer class="post__footer">
                             <div class="post__author">
-                                <a class="post__author-link" href="#"
+                                <a class="post__author-link"
+                                   href="./profile.php?id=<?= $post['author_id'] ?>"
                                    title="Автор">
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
                                         <img class="post__author-avatar"
-                                             src="img/<?= htmlspecialchars(
+                                             src="<?= htmlspecialchars(
                                                  $post['avatar']
                                              ) ?>"
                                              alt="Аватар пользователя">
@@ -133,18 +143,18 @@
                                             <use
                                                     xlink:href="#icon-heart-active"></use>
                                         </svg>
-                                        <span>0</span>
+                                        <span><?= $post['likes_count'] ?></span>
                                         <span class="visually-hidden">количество лайков</span>
                                     </a>
                                     <a class="post__indicator post__indicator--comments button"
-                                       href="#"
+                                       href="/post.php?id=<?= $post['id'] ?>"
                                        title="Комментарии">
                                         <svg class="post__indicator-icon"
                                              width="19" height="17">
                                             <use
                                                     xlink:href="#icon-comment"></use>
                                         </svg>
-                                        <span>0</span>
+                                        <span><?= $post['comments_count'] ?></span>
                                         <span class="visually-hidden">количество комментариев</span>
                                     </a>
                                 </div>
@@ -155,6 +165,16 @@
             <?php else : ?>
                 <h2>Публикаций не найдено</h2>
             <?php endif; ?>
+        </div>
+        <div class="popular__page-links">
+            <?php if (!$is_first_page) : ?>
+                <a class="popular__page-link popular__page-link--prev button button--gray"
+                   href="<?= $prev_page_url ?>">Предыдущая страница</a>
+            <? endif; ?>
+            <?php if (!$is_last_page) : ?>
+                <a class="popular__page-link popular__page-link--next button button--gray"
+                   href="<?= $next_page_url ?>">Следующая страница</a>
+            <? endif; ?>
         </div>
     </div>
 </section>

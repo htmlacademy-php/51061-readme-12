@@ -384,6 +384,10 @@ function get_passed_time_title(string $date = '', int $current_timestamp = null)
             break;
     }
 
+    if ($past_time == 0) {
+        return 'сейчас';
+    }
+
     if (isset($past_time) && isset($plural_form)) {
         return $past_time . ' ' . $plural_form . ' назад';
     }
@@ -456,24 +460,26 @@ function short_content(
  * @param string $type тип поста
  * @return string
  */
-function get_post_template_by_type(string $type): string
-{
-    $template = '';
+function get_post_template_by_type(
+    string $type,
+    bool $detail_template = false
+): string {
+    $template = ($detail_template ? 'post-detail' : 'post') . '/';
     switch ($type) {
         case 'post-link':
-            $template = 'post/link.php';
+            $template = $template . 'link.php';
             break;
         case 'post-text':
-            $template = 'post/text.php';
+            $template = $template . 'text.php';
             break;
         case 'post-video':
-            $template = 'post/video.php';
+            $template = $template . 'video.php';
             break;
         case 'post-photo':
-            $template = 'post/photo.php';
+            $template = $template . 'photo.php';
             break;
         case 'post-quote':
-            $template = 'post/quote.php';
+            $template = $template . 'quote.php';
             break;
     }
     return $template;
@@ -506,7 +512,10 @@ function format_post_data(array $post): array
         'content' => $content,
         'user_name' => $post['user_name'],
         'avatar' => $post['avatar'],
-        'created_at' => $post['created_at']
+        'created_at' => $post['created_at'],
+        'author_id' => $post['author_id'],
+        'likes_count' => $post['likes_count'],
+        'comments_count' => $post['comments_count']
     ];
 }
 

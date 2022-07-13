@@ -23,8 +23,8 @@
                         <article class="search__post post <?= $post['type'] ?>">
                             <header class="post__header post__author">
                                 <a title="Автор" class="post__author-link"
-                                   href="/post.php?id=<?= htmlspecialchars(
-                                       $post['id']
+                                   href="/profile.php?id=<?= htmlspecialchars(
+                                       $post['author_id']
                                    ) ?>">
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
@@ -59,6 +59,12 @@
                                 </a>
                             </header>
                             <div class="post__main <?= $post['type'] ?>">
+                                <h2><a href="/post.php?id=<?= htmlspecialchars(
+                                        $post['id']
+                                    ) ?>"><?= htmlspecialchars(
+                                            $post['title']
+                                        ) ?></a>
+                                </h2>
                                 <?php print($post['template']) ?>
                             </div>
                             <footer class="post__footer">

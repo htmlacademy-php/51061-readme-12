@@ -187,7 +187,7 @@
                             <a class="header__profile-link" href="#">
                                 <div class="header__avatar-wrapper">
                                     <img class="header__profile-avatar"
-                                         src="img/userpic-medium.jpg"
+                                         src="<?= $_SESSION['user']['avatar_url'] ?>"
                                          alt="Аватар профиля">
                                 </div>
                                 <div class="header__profile-name">
@@ -206,7 +206,7 @@
                                     <ul class="header__profile-nav">
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link"
-                                               href="#">
+                                               href="./profile.php">
                           <span class="header__profile-nav-text">
                             Мой профиль
                           </span>

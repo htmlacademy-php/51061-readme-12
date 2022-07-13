@@ -5,11 +5,14 @@
  * @var $title string
  * @var $id string
  */
-$safe_content = htmlspecialchars($content);
+
 ?>
-<blockquote>
-    <p>
-        <?= $safe_content ?>
-    </p>
-    <cite>Неизвестный Автор</cite>
-</blockquote>
+
+<div class="post-quote__wrapper">
+    <blockquote>
+        <p>
+            <?= htmlspecialchars($content) ?>
+        </p>
+        <cite>Неизвестный Автор</cite>
+    </blockquote>
+</div>
