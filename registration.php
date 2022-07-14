@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ['login' => $values['login']]
         );
         if (!$is_available) {
-            $errors['login'] = 'Данный логин зарегестрирован';
+            $errors['login'] = 'Данный логин зарегистрирован';
         }
     }
     if (empty($errors)) {
@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $user_id = create_user($con, $user_data);
         if ($user_id) {
+            $user_data['id'] = $user_id;
             $_SESSION['user'] = $user_data;
             header('Location: /feed.php');
         }

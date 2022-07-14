@@ -31,7 +31,11 @@ $forms_fields_rules = [
         if (has_file('userpic-file-photo')) {
             return;
         }
-        return validate_image_url($value);
+        $error = validate_image_url($value);
+        if ($error) {
+            $error = $error . ' или загружено фото';
+        }
+        return $error;
     },
     'userpic-file-photo' => function ($value) {
         return validate_image($value);
@@ -44,7 +48,7 @@ $forms_fields_rules = [
 ];
 
 $forms_config_by_type = [
-    'photo' => ['heading', 'photo-url', 'tags'],
+    'photo' => ['heading', 'photo-url', 'tags', 'userpic-file-photo'],
     'video' => ['heading', 'video-url', 'tags'],
     'text' => ['heading', 'text', 'tags'],
     'quote' => ['heading', 'text', 'author_quote', 'tags'],
