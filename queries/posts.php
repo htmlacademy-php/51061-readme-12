@@ -233,7 +233,6 @@ function get_post_hashtags(mysqli $con, int $post_id)
     ]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    //    TODO как представить массив данных в виде одномерного массива
     return array_column(mysqli_fetch_all($res, MYSQLI_ASSOC), 'hashtag');
 }
 
