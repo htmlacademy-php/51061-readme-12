@@ -31,7 +31,11 @@ $forms_fields_rules = [
         if (has_file('userpic-file-photo')) {
             return;
         }
-        return validate_image_url($value);
+        $error = validate_image_url($value);
+        if ($error) {
+            $error = $error . ' или загружено фото';
+        }
+        return $error;
     },
     'userpic-file-photo' => function ($value) {
         return validate_image($value);
@@ -44,7 +48,7 @@ $forms_fields_rules = [
 ];
 
 $forms_config_by_type = [
-    'photo' => ['heading', 'photo-url', 'tags'],
+    'photo' => ['heading', 'photo-url', 'tags', 'userpic-file-photo'],
     'video' => ['heading', 'video-url', 'tags'],
     'text' => ['heading', 'text', 'tags'],
     'quote' => ['heading', 'text', 'author_quote', 'tags'],
@@ -81,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $post = [
             'title' => $_POST['heading'],
             'content_type_id' => $post_types_ids['post-' . $current_post_type],
-            'author_id' => '1',
+            'author_id' => $_SESSION['user']['id'],
         ];
 
         switch ($current_post_type) {
@@ -118,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             foreach ($hashtags as $hashtag) {
                 $tag_id = get_tag_id($con, $hashtag);
                 if (!$tag_id) {
-                    $tag_id = saveTag($con, $hashtag);
+                    $tag_id = save_tag($con, $hashtag);
                 }
                 add_tag_to_post($con, $tag_id, $new_post_id);
             }

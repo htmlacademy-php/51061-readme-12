@@ -4,11 +4,15 @@
  * @var $content string
  * @var $title string
  * @var $id string
+ * @var $full_mode bool
  */
-$safe_content = htmlspecialchars($content);
-$safe_title = htmlspecialchars($title);
+
 ?>
 
-<h2><a href="/post.php?id=<?= htmlspecialchars($id) ?>"><?= $safe_title ?></a>
-</h2>
-<?php print(short_content($safe_content)) ?>
+<?php if (isset($full_mode)): ?>
+    <p>
+        <?= $content; ?>
+    </p>
+<?php else: ?>
+    <?php print(short_content(htmlspecialchars($content))) ?>
+<?php endif; ?>

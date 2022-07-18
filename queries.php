@@ -1,65 +1,19 @@
 <?php
 
-const SQL_POST_TEMPLATE = 'SELECT
-                   p.title AS title,
-                   p.id,
-                   t.icon_class AS type,
-                   u.login AS user_name,
-                   u.avatar_url AS avatar,
-                   p.views,
-                   p.image_url AS image_url,
-                   p.text AS text,
-                   p.url AS url,
-                   p.author_id AS author_id,
-                   p.author_quote AS author_quote,
-                   p.video_url AS video_url,
-                   p.created_at AS created_at
-            FROM posts p
-              JOIN users u on p.author_id = u.id
-              JOIN types t on p.content_type_id = t.id';
+require_once('./queries/helpers.php');
+require_once('./queries/posts.php');
 
-function show_query_error($con, $description)
+const SQL_USER_TEMPLATE = 'SELECT 
+    *,
+    COUNT(s.subscriptions) as total_subscriptions,
+    COUNT(p.id)  as total_posts,
+    FROM users u
+              JOIN subscriptions s on s.author_id = u.id
+              JOIN posts p on p.author_id = u.id';
+
+function get_author_info(mysqli $con, int $id)
 {
-    $error = mysqli_error($con);
-    print($description . $error);
-}
-
-function get_post_types($con)
-{
-    $result = mysqli_query($con, 'SELECT * FROM types');
-    if (!$result) {
-        show_query_error($con, 'Не удалось загрузить типы постов');
-        return;
-    }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
-
-function get_post($con, $id)
-{
-    if (!$id) {
-        return 'Нет Id запроса';
-    }
-    $sql = SQL_POST_TEMPLATE . ' WHERE p.id = ? ';
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if (!$result) {
-        show_query_error($con, 'Не удалось загрузить данные о посте');
-        return;
-    }
-    return mysqli_fetch_assoc($result);
-}
-
-function get_author_info($con, $id)
-{
-//    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
-    $sql = 'SELECT
-                u.email,
-                u.login,
-                u.avatar_url,
-                u.id
+    $sql = 'SELECT *
             FROM users u
             WHERE id = ? ';
     $stmt = mysqli_prepare($con, $sql);
@@ -73,9 +27,8 @@ function get_author_info($con, $id)
     return mysqli_fetch_assoc($result);
 }
 
-function get_subscribers_count($con, $author_id)
+function get_subscribers_count(mysqli $con, int $author_id)
 {
-//    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
     $sql = 'SELECT COUNT(subscription) as count
             FROM subscriptions
             WHERE subscription = ? ';
@@ -90,77 +43,7 @@ function get_subscribers_count($con, $author_id)
     return mysqli_fetch_assoc($result)['count'];
 }
 
-function get_posts_count($con, $author_id)
-{
-//    Не забудьте вывести всю информацию об авторе поста: аватар, число подписчиков и публикаций.
-    $sql = 'SELECT count(id) as count
-            FROM posts
-            WHERE author_id = ? ';
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $author_id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if (!$result) {
-        show_query_error($con, 'Не удалось загрузить количество подписчиков');
-        return;
-    }
-    return mysqli_fetch_assoc($result)['count'];
-}
-
-
-function get_posts($con, $post_type)
-{
-    $query = SQL_POST_TEMPLATE;
-
-    if ($post_type) {
-        $query = $query . ' WHERE t.icon_class = "' . $post_type . '" ';
-    }
-
-    $query = $query . ' ORDER BY views ASC;';
-    $result = mysqli_query($con, $query);
-
-    if (!$result) {
-        show_query_error($con, 'Не удалось получить список постов');
-        return;
-    }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
-
-function save_post($con, $post_data)
-{
-    $sql = 'INSERT INTO posts SET
-    content_type_id= ?,
-    author_id= ?,
-    title=?,
-    image_url=?,
-    video_url=?,
-    text=?,
-    author_quote=?,
-    url=?';
-
-    $stmt = db_get_prepare_stmt($con, $sql, [
-        $post_data['content_type_id'],
-        $post_data['author_id'],
-        $post_data['title'],
-        $post_data['image_url'] ?? null,
-        $post_data['video_url'] ?? null,
-        $post_data['text'] ?? null,
-        $post_data['author_quote'] ?? null,
-        $post_data['url'] ?? null,
-    ]);
-    mysqli_stmt_execute($stmt);
-
-    return mysqli_insert_id($con);
-}
-
-
-/**
- * Добавление тега к посту
- * @param mysqli $con Ресурс соединения
- * @param string $tag
- * @return string|false - id тега
- */
-function saveTag(mysqli $con, string $tag)
+function save_tag(mysqli $con, string $tag)
 {
     $sql = 'INSERT INTO hashtags SET name=?';
     $stmt = db_get_prepare_stmt($con, $sql, [$tag]);
@@ -168,27 +51,6 @@ function saveTag(mysqli $con, string $tag)
     return mysqli_insert_id($con);
 }
 
-/**
- * Добавление тега к посту
- * @param mysqli $mysql Ресурс соединения
- * @param int $tag_id
- * @param int $post_id
- */
-function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
-{
-    $sql = 'INSERT INTO post_hashtags SET
-        post_id=?,
-        hashtag_id=?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-}
-
-/**
- * Добавление тега к посту
- * @param mysqli $mysql Ресурс соединения
- * @param string $tag
- */
 function get_tag_id(mysqli $con, string $tag)
 {
     $sql = 'SELECT id from hashtags WHERE name = ?';
@@ -199,12 +61,6 @@ function get_tag_id(mysqli $con, string $tag)
     return $row['id'];
 }
 
-/**
- * Проверка логина или пароля
- * @param mysqli $mysql Ресурс соединения
- * @param array{login:string, email:string} $data
- * @return boolean
- */
 function is_email_or_login_available(mysqli $con, array $data)
 {
     $sql = 'SELECT * from users WHERE';
@@ -225,13 +81,6 @@ function is_email_or_login_available(mysqli $con, array $data)
     return empty($row);
 }
 
-
-/**
- * Получени пользователя по логину
- * @param mysqli $mysql Ресурс соединения
- * @param string $login логин
- * @return mixed
- */
 function get_user(mysqli $con, string $login)
 {
     $sql = 'SELECT * from users WHERE login=?';
@@ -242,12 +91,16 @@ function get_user(mysqli $con, string $login)
     return mysqli_fetch_assoc($res);
 }
 
-/**
- * Создание пользователя
- * @param mysqli $con Ресурс соединения
- * @param array{email:string,login:string,password:string,avatar_url:string} $user_data - данные пользователя
- * @return string|false - id юзера
- */
+function get_user_by_id(mysqli $con, string $id)
+{
+    $sql = 'SELECT * from users WHERE id=?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    return mysqli_fetch_assoc($res);
+}
+
 function create_user(mysqli $con, array $user_data)
 {
     $sql = 'INSERT INTO users SET email=?,login=?,password=?,avatar_url=?';
@@ -258,44 +111,69 @@ function create_user(mysqli $con, array $user_data)
         'avatar_url' => $user_data['avatar_url'] ?? null,
     ]);
     mysqli_stmt_execute($stmt);
-    $user_id = mysqli_insert_id($con);
-    if (!$user_id) {
-        show_query_error($con, 'Не удалось создать пользователя');
-        return;
-    }
     return mysqli_insert_id($con);
 }
 
-/**
- * Создание пользователя
- * @param mysqli $con Ресурс соединения
- * @param array{email:string,login:string,password:string,avatar_url:string} $user_data - данные пользователя
- * @return array - id юзера
- */
-function search_posts(mysqli $con, string $text = '')
+function get_user_subscriptions_count(mysqli $con, int $user_id): int
 {
-    $trim_text = trim($text);
-    $is_one_word = count(explode(' ', $trim_text)) == 1;
-    if ($is_one_word) {
-        $sql = SQL_POST_TEMPLATE . " WHERE p.title LIKE '%" . $trim_text . "%' or  p.text LIKE '%" . $trim_text . "%'";
-        $res = mysqli_query($con, $sql);
-        if (!$res) {
-            show_query_error($con, 'Не удалось получить список постов');
-            return;
-        }
-        return mysqli_fetch_all($res, MYSQLI_ASSOC);
-    } else {
-        $sql = SQL_POST_TEMPLATE . ' WHERE MATCH(p.title, p.text) AGAINST(?)';
-        $stmt = db_get_prepare_stmt($con, $sql, [
-            'text' => $text,
-        ]);
-        mysqli_stmt_execute($stmt);
-        $res = mysqli_stmt_get_result($stmt);
-        if (!$res) {
-            show_query_error($con, 'Не удалось получить список постов');
-            return;
-        }
-        return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    $sql = 'SELECT COUNT(subscription) as total_subscriptions
+                    FROM subscriptions
+                    WHERE subscription = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $user_id,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if (!$res) {
+        show_query_error($con, 'Не удалось получить счетчик подписок');
+        return 0;
     }
+    return mysqli_fetch_assoc($res)['total_subscriptions'];
+}
+
+function check_subscribe_to_user(
+    mysqli $con,
+    int $author_id,
+    int $subscription_id
+): bool {
+    $sql = 'SELECT * from subscriptions
+                    WHERE author_id = ? AND subscription  = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $author_id,
+        'subscription' => $subscription_id
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if (!$res) {
+        show_query_error($con, 'Не удалось получить счетчик постов');
+        return 0;
+    }
+    return !!mysqli_fetch_assoc($res);
+}
+
+function subscribe_to_user(mysqli $con, int $author_id, int $subscription_id)
+{
+    $sql = 'INSERT INTO subscriptions SET
+        author_id = ?,
+        subscription = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $author_id,
+        'subscription' => $subscription_id
+    ]);
+    mysqli_stmt_execute($stmt);
+    return mysqli_insert_id($con);
+}
+
+function unsubscribe_to_user(mysqli $con, int $author_id, int $subscription_id)
+{
+    $sql = 'DELETE FROM subscriptions
+        WHERE author_id = ? AND subscription = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $author_id,
+        'subscription' => $subscription_id
+    ]);
+    mysqli_stmt_execute($stmt);
 }
 
