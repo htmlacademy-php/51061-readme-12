@@ -5,9 +5,11 @@
  * @var $current_time string
  * @var $user_name string
  * @var $is_auth bool
+ * @var $send_email - функция отправки email
  */
 require_once('bootstrap.php');
 require_once('helpers/validate-functions.php');
+require_once('mail.php');
 
 $title = 'readme: добавление публикации';
 
@@ -115,6 +117,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $new_post_id = save_post($con, $post);
+        $subscribers = get_user_subscribers($con, $_SESSION['user']['id']);
+
+        if (!empty($subscribers)) {
+            foreach ($subscribers as $user) {
+                $message = [
+                    'to' => $user['email'],
+                    'subject' => 'Новая публикация от пользователя ' . $_SESSION['user']['login'] . '!',
+                    'text' => 'Здравствуйте, ' . $user['login'] . '. Пользователь ' . $_SESSION['user']['login'] . ' только что опубликовал новую запись „' . $post['title'] . '“. Посмотрите её на странице пользователя: ' . ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/profile.php?id=' . $post['author_id'],
+                ];
+                $send_email($message);
+            }
+        }
 
         if ($new_post_id && isset($_POST['tags'])) {
             $hashtags = explode(' ', $_POST['tags']);

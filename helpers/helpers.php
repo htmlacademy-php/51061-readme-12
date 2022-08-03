@@ -314,8 +314,10 @@ function shouldWeShowMonthAgo(int $time): bool
  * @param int|null $current_timestamp
  * @return string|false
  */
-function get_passed_time_title(string $date = '', int $current_timestamp = null)
-{
+function get_passed_time_title(
+    string $date = '',
+    ?int $current_timestamp = null
+) {
     if (!$date) {
         return false;
     }

@@ -70,10 +70,10 @@ if (isset($_GET['id'])) {
             ]
         );
 
-        $subscribers_count = get_subscribers_count($con, $author_id);
+        $subscribers_count = get_user_subscriptions_count($con, $author_id);
         $posts_count = get_posts_count_by_author($con, $author_id);
 
-        $author_info = get_author_info($con, $author_id);
+        $author_info = get_user_by_id($con, $author_id);
         $author_info['subscribers_count'] = $subscribers_count;
         $author_info['posts_count'] = $posts_count;
 

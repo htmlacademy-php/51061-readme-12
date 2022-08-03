@@ -11,7 +11,6 @@ require_once('bootstrap.php');
 $title = 'readme: моя лента';
 $current_post_type = $_GET['type'] ?? null;
 
-
 if (!$is_auth) {
     header('Location: /index.php');
 }

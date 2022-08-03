@@ -15,7 +15,6 @@ if (!$is_auth) {
     header('Location: /index.php');
 }
 
-
 $user = '';
 $has_subscription = false;
 $get_param_user_id = $_GET['id'] ?? null;

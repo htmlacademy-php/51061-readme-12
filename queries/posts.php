@@ -21,6 +21,28 @@ const SQL_POST_TEMPLATE = 'SELECT p.title,
          JOIN users u on p.author_id = u.id
          JOIN types t on p.content_type_id = t.id';
 
+/**
+ * Получение списка постов
+ * @param mysqli $con Ресурс соединения
+ * @return array|void
+ */
+function get_post_types($con)
+{
+    $result = mysqli_query($con, 'SELECT * FROM types');
+    if (!$result) {
+        show_query_error($con, 'Не удалось загрузить типы постов');
+        return;
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+
+/**
+ * Получение поста по id
+ * @param mysqli $con Ресурс соединения
+ * @param int $id ID поста
+ * @return array|string|void
+ */
 function get_post(mysqli $con, int $id)
 {
     if (!$id) {
@@ -39,6 +61,12 @@ function get_post(mysqli $con, int $id)
     return mysqli_fetch_assoc($result);
 }
 
+/**
+ * Получение кло-ва постов по автору
+ * @param mysqli $con Ресурс соединения
+ * @param string $author_id ID пользователя
+ * @return int|void
+ */
 function get_post_comments(mysqli $con, int $id)
 {
     $sql = 'SELECT 
@@ -60,6 +88,12 @@ function get_post_comments(mysqli $con, int $id)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+/**
+ * Получение кло-ва постов по автору
+ * @param mysqli $con Ресурс соединения
+ * @param string $author_id ID пользователя
+ * @return int|void
+ */
 function get_posts_count_by_author(mysqli $con, string $author_id)
 {
     $sql = 'SELECT count(id) as count
@@ -76,7 +110,12 @@ function get_posts_count_by_author(mysqli $con, string $author_id)
     return mysqli_fetch_assoc($result)['count'];
 }
 
-
+/**
+ * Получение постов по подписке
+ * @param mysqli $con Ресурс соединения
+ * @param array{current_user_id:string, type:string} $params параметры запроса
+ * @return array
+ */
 function get_posts_by_subscription(mysqli $con, array $params)
 {
     $current_user_id = $params['current_user_id'];
@@ -119,7 +158,12 @@ function get_posts_by_subscription(mysqli $con, array $params)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-
+/**
+ * Получение постов (с пагинацией если будут переданы параметры)
+ * @param mysqli $con Ресурс соединения
+ * @param array{type:string, page:string, limit:string} $params параметры запроса
+ * @return array
+ */
 function get_posts(mysqli $con, array $params)
 {
     $query = SQL_POST_TEMPLATE;
@@ -147,7 +191,12 @@ function get_posts(mysqli $con, array $params)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-
+/**
+ * Получение количества постов
+ * @param mysqli $con Ресурс соединения
+ * @param string|null $post_type Название типа поста (опционально)
+ * @return int
+ */
 function get_posts_count(mysqli $con, ?string $post_type)
 {
     $query = 'SELECT count(p.id) as count
@@ -167,6 +216,12 @@ function get_posts_count(mysqli $con, ?string $post_type)
     return mysqli_fetch_assoc($result)['count'];
 }
 
+/**
+ * Сохранение поста
+ * @param mysqli $con Ресурс соединения
+ * @param array $post_data Строка запроса
+ * @return int ID поста
+ */
 function save_post(mysqli $con, array $post_data)
 {
     $sql = 'INSERT INTO posts SET
@@ -194,6 +249,12 @@ function save_post(mysqli $con, array $post_data)
     return mysqli_insert_id($con);
 }
 
+/**
+ * Поиск постов по строке
+ * @param mysqli $con Ресурс соединения
+ * @param string $text Строка запроса
+ * @return array
+ */
 function search_posts(mysqli $con, string $text = '')
 {
     $trim_text = trim($text);
@@ -221,6 +282,12 @@ function search_posts(mysqli $con, string $text = '')
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
+/**
+ * Получение хештегов поста
+ * @param mysqli $con Ресурс соединения
+ * @param int $post_id ID поста
+ * @return array
+ */
 function get_post_hashtags(mysqli $con, int $post_id)
 {
     $sql = 'SELECT h.name AS hashtag 
@@ -236,6 +303,34 @@ function get_post_hashtags(mysqli $con, int $post_id)
     return array_column(mysqli_fetch_all($res, MYSQLI_ASSOC), 'hashtag');
 }
 
+/**
+ * Проверка имеет ли пост лайк
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id ID автора
+ * @param int $post_id ID поста
+ * @return id - ID лайка
+ */
+function has_like(mysqli $con, int $user_id, int $post_id)
+{
+    $sql = 'SELECT * FROM likes
+        WHERE author_id = ? AND post_id = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $user_id,
+        'post_id' => $post_id
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($res)['id'];
+}
+
+/**
+ * Добавление лайка к комментарию
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id ID автора
+ * @param int $post_id ID поста
+ * @return id - ID лайка
+ */
 function like_post(mysqli $con, int $user_id, int $post_id)
 {
     $sql = 'INSERT INTO likes SET
@@ -249,6 +344,28 @@ function like_post(mysqli $con, int $user_id, int $post_id)
     return mysqli_insert_id($con);
 }
 
+/**
+ * Удаление лайка к комментарию
+ * @param mysqli $con Ресурс соединения
+ * @param int $like_id ID лайка
+ */
+function unlike_post(mysqli $con, int $like_id)
+{
+    $sql = 'DELETE FROM likes WHERE id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'id' => $like_id
+    ]);
+    mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Сохранение комментария к посту
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id ID пользователя
+ * @param int $post_id ID поста
+ * @param string $text Текст комментария
+ * @return id - ID комментария
+ */
 function save_post_comment(
     mysqli $con,
     int $user_id,
@@ -268,6 +385,12 @@ function save_post_comment(
     return mysqli_insert_id($con);
 }
 
+/**
+ * Получение постов пользователя
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id ID пользователя
+ * @return array - список постов
+ */
 function get_user_posts(mysqli $con, int $user_id)
 {
     $sql = SQL_POST_TEMPLATE . ' WHERE p.author_id = ? ';
@@ -284,6 +407,13 @@ function get_user_posts(mysqli $con, int $user_id)
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
+/**
+ * Добавление тега к посту
+ * @param mysqli $con Ресурс соединения
+ * @param int $tag_id ID тега
+ * @param int $post_id ID поста
+ * @return string - id тега
+ */
 function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
 {
     $sql = 'INSERT INTO post_hashtags SET
@@ -291,5 +421,6 @@ function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
         hashtag_id=?';
     $stmt = db_get_prepare_stmt($con, $sql, [$post_id, $tag_id]);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_insert_id($con);
 }

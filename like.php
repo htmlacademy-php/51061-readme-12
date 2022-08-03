@@ -20,7 +20,12 @@ if (isset($_GET['post_id'])) {
     $has_post = get_post($con, $post_id);
 
     if ($has_post) {
-        $id = like_post($con, $user_id, $post_id);
+        $like_id = has_like($con, $user_id, $post_id);
+        if (!$like_id) {
+            like_post($con, $user_id, $post_id);
+        } else {
+            unlike_post($con, $like_id);
+        }
     }
 }
 
