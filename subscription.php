@@ -33,5 +33,5 @@ if ($_GET['has_subscription'] === 'true') {
     $send_email($message);
 }
 
-header('Location:' . $_SERVER[HTTP_REFERER]);
+header('Location:' . $_SERVER['HTTP_REFERER']);
 
