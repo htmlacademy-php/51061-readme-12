@@ -1,0 +1,13 @@
+{
+  "name": "root/readme",
+  "authors": [
+    {
+      "name": "gladkoff",
+      "email": "agladkov@logrocon.com"
+    }
+  ],
+  "require": {
+    "symfony/mailer": "^5.4",
+    "vlucas/phpdotenv": "^5.4"
+  }
+}

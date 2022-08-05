@@ -101,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ];
 
         if (has_file('userpic-file')) {
-            var_dump($values['userpic-file']);
             $user_data['avatar_url'] = save_photo_to_server(
                 $_FILES['userpic-file']
             );
@@ -110,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user_id = create_user($con, $user_data);
         if ($user_id) {
             $user_data['id'] = $user_id;
+            $user_data['created_at'] = date_create()->format('Y-m-d H:i');
             $_SESSION['user'] = $user_data;
             header('Location: /feed.php');
         }

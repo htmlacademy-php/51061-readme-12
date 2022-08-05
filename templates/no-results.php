@@ -3,6 +3,11 @@
  * @var $search_text string
  */
 
+$previous = "javascript:history.go(-1)";
+if (isset($_SERVER['HTTP_REFERER'])) {
+    $previous = $_SERVER['HTTP_REFERER'];
+}
+
 ?>
 <main class="page__main page__main--search-results">
     <h1 class="visually-hidden">Страница результатов поиска (нет
@@ -26,8 +31,10 @@
                 </p>
                 <div class="search__links">
                     <a class="search__popular-link button button--main"
-                       href="#">Популярное</a>
-                    <a class="search__back-link" href="#">Вернуться назад</a>
+                       href="./popular.php">Популярное</a>
+                    <a class="search__back-link"
+                       href="<?= $previous ?>">Вернуться
+                        назад</a>
                 </div>
             </div>
         </div>
