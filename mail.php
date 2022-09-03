@@ -12,13 +12,17 @@ $transport = Transport::fromDsn($dsn);
 $mailer = new Mailer($transport);
 
 $send_email = function ($message_info) use ($mailer) {
-    // Формирование сообщения
-    $message = new Email();
-    $message->from($_ENV["SMTP_LOGIN"]);
-    $message->to($message_info['to']);
-    $message->subject($message_info['subject']);
-    $message->text($message_info['text']);
-    $mailer->send($message);
+    try {
+        // Формирование сообщения
+        $message = new Email();
+        $message->from($_ENV["SMTP_LOGIN"]);
+        $message->to($message_info['to']);
+        $message->subject($message_info['subject']);
+        $message->text($message_info['text']);
+        $mailer->send($message);
+    } catch (Exception $e) {
+        print('Выброшено исключение: ' . $e->getMessage() . "\n");
+    }
 };
 
 

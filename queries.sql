@@ -119,9 +119,3 @@ SET author_id=2,
 INSERT INTO subscriptions
 SET author_id=2,
     subscription=1;
-
-SELECT *
-from subscriptions s
-WHERE s.author_id = 4
-  AND s.subscription = 1
-

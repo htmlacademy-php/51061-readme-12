@@ -5,6 +5,7 @@
  * @var $label string
  * @var $type string
  * @var $value string
+ * @var $required string
  * @var $error string
  * @var $placeholder string
  */
@@ -14,8 +15,11 @@
 <div
         class="<?= $class ?>__input-wrapper form__input-wrapper">
     <label class="<?= $class ?>__label form__label"
-           for="<?= $class ?>-<?= $label ?>"><?= $title ?> <span
-                class="form__input-required">*</span></label>
+           for="<?= $class ?>-<?= $label ?>"><?= $title ?>
+        <?php if ($required): ?><span
+                class="form__input-required">*</span>
+        <?php endif; ?>
+    </label>
     <div
             class="form__input-section <?= $error ? 'form__input-section--error' : '' ?>"
     >

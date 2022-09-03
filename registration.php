@@ -19,6 +19,7 @@ $fields_config = [
         'placeholder' => 'Укажите эл.почту',
         'label' => 'email',
         'type' => 'email',
+        'required' => true,
         'validation' => 'validate_email'
     ],
     'login' => [
@@ -26,6 +27,7 @@ $fields_config = [
         'placeholder' => 'Укажите логин',
         'label' => 'login',
         'type' => 'text',
+        'required' => true,
         'validation' => 'validate_login'
     ],
     'password' => [
@@ -33,6 +35,7 @@ $fields_config = [
         'placeholder' => 'Придумайте пароль',
         'label' => 'password',
         'type' => 'password',
+        'required' => true,
         'validation' => 'validate_password'
     ],
     'password-repeat' => [
@@ -40,6 +43,7 @@ $fields_config = [
         'placeholder' => 'Повторите пароль',
         'label' => 'password-repeat',
         'type' => 'password',
+        'required' => true,
         'validation' => function ($value) {
             return validate_repeat_password(
                 get_post_val('password'),
@@ -52,6 +56,7 @@ $fields_config = [
         'placeholder' => 'Загрузите фото',
         'label' => 'userpic-file',
         'type' => 'file',
+        'required' => false,
         'validation' => 'validate_image'
     ],
 ];
@@ -122,6 +127,7 @@ foreach ($fields_config as $key => $field) {
         'title' => $field['title'],
         'placeholder' => $field['placeholder'],
         'label' => $field['label'],
+        'required' => $field['required'],
         'type' => $field['type'],
         'value' => get_post_val($key),
         'error' => $errors[$key] ?? ''

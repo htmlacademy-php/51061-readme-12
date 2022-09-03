@@ -1,8 +1,8 @@
 CREATE
-DATABASE IF NOT EXISTS readme
-	DEFAULT CHARACTER SET utf8;
+    DATABASE IF NOT EXISTS readme
+    DEFAULT CHARACTER SET utf8;
 USE
-readme;
+    readme;
 
 /**
 Пользователь
@@ -20,13 +20,13 @@ email;
 --
 CREATE TABLE users
 (
-  id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  email      VARCHAR(320) NOT NULL UNIQUE,
-  login      VARCHAR(128) NOT NULL UNIQUE,
-  password   VARCHAR(100) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  avatar_url VARCHAR(2048)
+    id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    email      VARCHAR(320)                   NOT NULL UNIQUE,
+    login      VARCHAR(128)                   NOT NULL UNIQUE,
+    password   VARCHAR(100)                   NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    avatar_url VARCHAR(2048)
 );
 /**
 Сообщение
@@ -40,13 +40,13 @@ CREATE TABLE users
 */
 CREATE TABLE messages
 (
-  id           INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  content      TEXT NOT NULL,
-  sender_id    INT,
-  recipient_id INT,
-  FOREIGN KEY (sender_id) REFERENCES users (id),
-  FOREIGN KEY (recipient_id) REFERENCES users (id)
+    id           INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    content      TEXT                           NOT NULL,
+    sender_id    INT,
+    recipient_id INT,
+    FOREIGN KEY (sender_id) REFERENCES users (id),
+    FOREIGN KEY (recipient_id) REFERENCES users (id)
 );
 /**
 Тип контента
@@ -57,9 +57,9 @@ CREATE TABLE messages
 */
 CREATE TABLE types
 (
-  id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  icon_class VARCHAR(30) NOT NULL UNIQUE ,
-  title      VARCHAR(130) NOT NULL UNIQUE
+    id         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    icon_class VARCHAR(30)                    NOT NULL UNIQUE,
+    title      VARCHAR(130)                   NOT NULL UNIQUE
 );
 /**
 Пост
@@ -80,21 +80,26 @@ CREATE TABLE types
 */
 CREATE TABLE posts
 (
-  id              INT AUTO_INCREMENT PRIMARY KEY,
-  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  title           VARCHAR(255) NOT NULL,
-  text         TEXT,
-  author_quote    VARCHAR(100),
-  image_url       VARCHAR(2048),
-  video_url       VARCHAR(2048),
-  url             VARCHAR(2048),
-  views           INT       DEFAULT 0,
-  author_id       INT,
-  content_type_id INT,
-  FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (content_type_id) REFERENCES types (id)
+    id                 INT AUTO_INCREMENT PRIMARY KEY,
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    title              VARCHAR(255) NOT NULL,
+    text               TEXT,
+    author_quote       VARCHAR(100),
+    image_url          VARCHAR(2048),
+    video_url          VARCHAR(2048),
+    url                VARCHAR(2048),
+    views              INT       DEFAULT 0,
+    author_id          INT,
+    content_type_id    INT,
+    repost             BOOLEAN   DEFAULT false,
+    original_author_id INT          NULL,
+    original_post_id   INT          NULL,
+    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (content_type_id) REFERENCES types (id)
 );
+
+
 /**
 Комментарий
 Текстовый комментарий, оставленный к одному из постов.
@@ -107,14 +112,14 @@ CREATE TABLE posts
 */
 CREATE TABLE comments
 (
-  id         INT AUTO_INCREMENT PRIMARY KEY,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  content    TEXT,
-  author_id  INT,
-  post_id    INT,
-  FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (post_id) REFERENCES posts (id)
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    content    TEXT,
+    author_id  INT,
+    post_id    INT,
+    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (post_id) REFERENCES posts (id)
 );
 /**
 Лайк
@@ -125,11 +130,11 @@ CREATE TABLE comments
 */
 CREATE TABLE likes
 (
-  id        INT AUTO_INCREMENT PRIMARY KEY,
-  author_id INT,
-  post_id   INT,
-  FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (post_id) REFERENCES posts (id)
+    id        INT AUTO_INCREMENT PRIMARY KEY,
+    author_id INT,
+    post_id   INT,
+    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (post_id) REFERENCES posts (id)
 );
 /**
 Подписка
@@ -140,11 +145,11 @@ CREATE TABLE likes
 */
 CREATE TABLE subscriptions
 (
-  author_id    INT,
-  subscription INT,
-  PRIMARY KEY (author_id, subscription), -- Оо, необычненько, на практике такое редко увидишь, но это работает
-  FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (subscription) REFERENCES users (id)
+    author_id    INT,
+    subscription INT,
+    PRIMARY KEY (author_id, subscription), -- Оо, необычненько, на практике такое редко увидишь, но это работает
+    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (subscription) REFERENCES users (id)
 );
 /**
 Хештег
@@ -152,18 +157,18 @@ CREATE TABLE subscriptions
 */
 CREATE TABLE hashtags
 (
-  id         INT AUTO_INCREMENT PRIMARY KEY,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  name       VARCHAR(100) UNIQUE
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    name       VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE post_hashtags
 (
-  post_id    INT,
-  hashtag_id INT,
-  PRIMARY KEY (post_id, hashtag_id),
-  FOREIGN KEY (post_id) REFERENCES posts (id),
-  FOREIGN KEY (hashtag_id) REFERENCES hashtags (id)
+    post_id    INT,
+    hashtag_id INT,
+    PRIMARY KEY (post_id, hashtag_id),
+    FOREIGN KEY (post_id) REFERENCES posts (id),
+    FOREIGN KEY (hashtag_id) REFERENCES hashtags (id)
 );
 

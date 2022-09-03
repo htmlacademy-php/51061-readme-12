@@ -61,7 +61,7 @@ function get_tag_id(mysqli $con, string $tag)
  * Проверка логина или пароля
  * @param mysqli $mysql Ресурс соединения
  * @param array{login:string, email:string} $data
- * @return boolean
+ * @return bool
  */
 function is_email_or_login_available(mysqli $con, array $data)
 {
@@ -227,4 +227,91 @@ function unsubscribe_to_user(mysqli $con, int $author_id, int $subscription_id)
     ]);
     mysqli_stmt_execute($stmt);
 }
+
+/**
+ * Получить пользователей с которыми есть переписка
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id - id пользователя
+ * @return array - список пользователей
+ */
+function get_user_communications(mysqli $con, int $user_id)
+{
+    $sql = 'SELECT u.id,
+       u.login,
+       u.avatar_url,
+       result.created_at,
+       m2.content
+FROM (SELECT
+       m.recipient_id,
+       max(m.created_at) as created_at
+    FROM messages m
+    WHERE m.sender_id = ?
+    GROUP BY m.recipient_id
+) result
+    JOIN messages m2
+        ON result.recipient_id=m2.recipient_id
+               AND result.created_at = m2.created_at
+    JOIN users u ON u.id = result.recipient_id';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'user_id' => $user_id,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Получить сообщения из диалога
+ * @param mysqli $con Ресурс соединения
+ * @param int $current_user_id - id пользователя
+ * @param int $user_id - id пользователя
+ * @return array
+ */
+function get_user_dialog(mysqli $con, int $current_user_id, int $user_id)
+{
+    $sql = 'SELECT *
+    FROM messages m
+        WHERE (m.sender_id = ? AND m.recipient_id=?) OR (m.sender_id = ? AND m.recipient_id=?)';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'sender_id' => $current_user_id,
+        'recipient_id' => $user_id,
+        'sender_id_2' => $user_id,
+        'recipient_id_2' => $current_user_id,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Отправить сообщение
+ * @param mysqli $con Ресурс соединения
+ * @param int $current_user_id - id пользователя
+ * @param int $user_id - id пользователя
+ * @param int $content - сообщение
+ * @return numeric
+ */
+function sent_message(
+    mysqli $con,
+    int $sender_id,
+    int $recipient_id,
+    string $content
+) {
+    $sql = 'INSERT INTO messages SET
+        sender_id=?,
+        recipient_id=?,
+        content=?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'sender_id' => $sender_id,
+        'recipient_id' => $recipient_id,
+        'content' => $content,
+    ]);
+    mysqli_stmt_execute($stmt);
+    return mysqli_insert_id($con);
+}
+
+
 

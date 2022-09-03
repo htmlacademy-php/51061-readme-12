@@ -2,6 +2,7 @@
 
 session_start();
 
+
 require_once('vendor/autoload.php');
 
 $dotenv = Dotenv\Dotenv::createImmutable('./');
@@ -11,8 +12,6 @@ require_once('helpers/helpers.php');
 require_once('queries.php');
 require_once('mail.php');
 
-date_default_timezone_set('Europe/Moscow');
-//
 
 //В сценарии главной страницы выполните подключение к MySQL.
 $con = mysqli_connect(

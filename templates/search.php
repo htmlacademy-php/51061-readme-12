@@ -29,9 +29,9 @@
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
                                         <img class="post__author-avatar"
-                                             src="img/<?= htmlspecialchars(
+                                             src="<?= htmlspecialchars(
                                                  $post['avatar']
-                                             ) ?>"
+                                             ) ?? '/img/userpic.jpg' ?>"
                                              alt="Аватар пользователя">
                                     </div>
                                     <div class="post__info">
@@ -71,7 +71,8 @@
                                 <div class="post__indicators">
                                     <div class="post__buttons">
                                         <a class="post__indicator post__indicator--likes button"
-                                           href="#" title="Лайк">
+                                           href="/like.php?post_id=<?= $post['id'] ?>"
+                                           title="Лайк">
                                             <svg class="post__indicator-icon"
                                                  width="20" height="17">
                                                 <use xlink:href="#icon-heart"></use>
@@ -83,7 +84,7 @@
                                                 <use
                                                         xlink:href="#icon-heart-active"></use>
                                             </svg>
-                                            <span>0</span>
+                                            <span><?= $post['likes_count'] ?></span>
                                             <span class="visually-hidden">количество лайков</span>
                                         </a>
                                         <a class="post__indicator post__indicator--comments button"

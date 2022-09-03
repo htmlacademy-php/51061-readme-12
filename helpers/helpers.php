@@ -511,13 +511,15 @@ function format_post_data(array $post): array
         'title' => $post['title'],
         'author_quote' => $post['author_quote'],
         'type' => $post['type'],
+        'views' => $post['views'],
         'content' => $content,
         'user_name' => $post['user_name'],
         'avatar' => $post['avatar'],
         'created_at' => $post['created_at'],
         'author_id' => $post['author_id'],
         'likes_count' => $post['likes_count'],
-        'comments_count' => $post['comments_count']
+        'comments_count' => $post['comments_count'],
+        'repost_count' => $post['repost_count'] ?? 0,
     ];
 }
 

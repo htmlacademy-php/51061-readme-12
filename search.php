@@ -20,7 +20,14 @@ $search_text = $_GET['search'] ?? null;
 $content = '';
 
 if ($search_text) {
-    $posts_data = search_posts($con, $search_text);
+    $first_symbol = substr($search_text, 0, 1);
+    if ($first_symbol == '#') {
+        $hashtag = substr($search_text, 1);
+        $posts_data = search_posts_by_tag($con, $hashtag);
+    } else {
+        $posts_data = search_posts($con, $search_text);
+    }
+
     if (empty($posts_data)) {
         $content = include_template(
             'no-results.php',
