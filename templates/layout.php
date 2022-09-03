@@ -118,7 +118,7 @@
 <header class="header">
     <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="main">
+            <a class="header__logo-link" href="index.php">
                 <img class="header__logo" src="img/logo.svg"
                      alt="Логотип readme" width="128" height="24">
             </a>
@@ -171,7 +171,11 @@
                             </a>
                         </li>
                         <li class="header__my-page header__my-page--messages">
-                            <a class="header__page-link" href="messages.html"
+                            <a class="header__page-link  <?= strpos(
+                                $current_url,
+                                'messages'
+                            ) ? "header__page-link--active" : '' ?>"
+                               href="messages.php"
                                title="Личные сообщения">
                                 <span
                                         class="visually-hidden">Личные сообщения</span>
@@ -187,7 +191,7 @@
                             <a class="header__profile-link" href="#">
                                 <div class="header__avatar-wrapper">
                                     <img class="header__profile-avatar"
-                                         src="<?= $_SESSION['user']['avatar_url'] ?>"
+                                         src="<?= $_SESSION['user']['avatar_url'] ?? './img/userpic.jpg' ?>"
                                          alt="Аватар профиля">
                                 </div>
                                 <div class="header__profile-name">
@@ -214,10 +218,9 @@
                                         </li>
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link"
-                                               href="#">
+                                               href="messages.php">
                           <span class="header__profile-nav-text">
                             Сообщения
-                            <i class="header__profile-indicator">2</i>
                           </span>
                                             </a>
                                         </li>

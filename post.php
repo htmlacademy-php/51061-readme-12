@@ -25,6 +25,7 @@ if (isset($_GET['id'])) {
     $post_id = $_GET['id'];
 
     $post_data = get_post($con, $post_id);
+    increment_post_view($con, $post_id);
     $post_comments = get_post_comments($con, $post_id);
 
     $has_subscription = check_subscribe_to_user(

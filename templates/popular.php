@@ -108,23 +108,16 @@
                                         <b class="post__author-name"><?= htmlspecialchars(
                                                 $post['user_name']
                                             ) ?></b>
-                                        <?php $post_date_str = generate_random_date(
-                                            $key
-                                        ); ?>
+
                                         <time class="post__time"
                                               title='<?= date_create(
-                                                  $post_date_str
+                                                  $post['created_at']
                                               )->format('d.m.Y H:i') ?>'
-                                              datetime="<?= $post_date_str ?>">
-                                            <?php
-                                            $passed_time_title = get_passed_time_title(
-                                                $post_date_str,
-                                                $current_time
-                                            );
-                                            if ($passed_time_title) {
-                                                echo $passed_time_title;
-                                            }
-                                            ?></time>
+                                              datetime="<?= $post['created_at'] ?>">
+                                            <?= get_passed_time_title(
+                                                $post['created_at']
+                                            ) ?>
+                                        </time>
                                     </div>
                                 </a>
                             </div>

@@ -58,7 +58,7 @@
                         </a>
                         <a
                                 class="profile__user-button user__button user__button--writing button button--green"
-                                href="#">Сообщение</a>
+                                href="/messages.php?user_id=<?= $user['id'] ?>">Сообщение</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -91,6 +91,7 @@
                             $posts
                             as $post
                         ) : ?>
+                            <?php $is_current_user = $_SESSION['user']['id'] == $post['author_id']; ?>
                             <article
                                     class="profile__post post <?= $post['type'] ?>">
                                 <header class="post__header">
@@ -120,12 +121,15 @@
                                                 <span class="visually-hidden">количество лайков</span>
                                             </a>
                                             <a class="post__indicator post__indicator--repost button"
-                                               href="#" title="Репост">
+                                                <?php if (!$is_current_user) : ?>
+                                                    href="repost.php?id=<?= $post['id'] ?>"
+                                                <?php endif; ?>
+                                               title="Репост">
                                                 <svg class="post__indicator-icon"
                                                      width="19" height="17">
                                                     <use xlink:href="#icon-repost"></use>
                                                 </svg>
-                                                <span>5</span>
+                                                <span><?= $post['repost_count'] ?></span>
                                                 <span class="visually-hidden">количество репостов</span>
                                             </a>
                                             <a class="post__indicator post__indicator--comments button"
@@ -159,7 +163,8 @@
                                     </div>
                                     <ul class="post__tags">
                                         <?php foreach ($post['hashtags'] as $hashtag) : ?>
-                                            <li><a href="#"><?= $hashtag ?></a>
+                                            <li>
+                                                <a href="search.php?search=%23<?= $hashtag ?>"><?= $hashtag ?></a>
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>

@@ -30,14 +30,13 @@ foreach ($post_types as $type) {
 $forms_fields_rules = [
     'heading' => 'validate_heading',
     'photo-url' => function ($value) {
-        if (has_file('userpic-file-photo')) {
-            return;
+        if (!has_file('userpic-file-photo')) {
+            $error = validate_image_url($value);
+            if ($error) {
+                $error = $error . ' или загружено фото';
+            }
+            return $error;
         }
-        $error = validate_image_url($value);
-        if ($error) {
-            $error = $error . ' или загружено фото';
-        }
-        return $error;
     },
     'userpic-file-photo' => function ($value) {
         return validate_image($value);

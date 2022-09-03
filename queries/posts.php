@@ -5,6 +5,7 @@ require_once('./queries/helpers.php');
 const SQL_POST_TEMPLATE = 'SELECT p.title,
        p.id,
        t.icon_class AS type,
+       p.content_type_id,
        u.login AS user_name,
        u.avatar_url AS avatar,
        p.views,
@@ -16,7 +17,8 @@ const SQL_POST_TEMPLATE = 'SELECT p.title,
        p.video_url,
        p.created_at,
        (SELECT COUNT(l.id) FROM likes l WHERE p.id = l.post_id) AS likes_count,
-       (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count
+       (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count,
+       (SELECT COUNT(p2.original_post_id) FROM posts p2 WHERE p.id = p2.original_post_id) AS repost_count
        FROM posts p
          JOIN users u on p.author_id = u.id
          JOIN types t on p.content_type_id = t.id';
@@ -31,9 +33,9 @@ function get_post_types($con)
     $result = mysqli_query($con, 'SELECT * FROM types');
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить типы постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 
@@ -56,9 +58,9 @@ function get_post(mysqli $con, int $id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить данные о посте');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result);
     }
-    return mysqli_fetch_assoc($result);
 }
 
 /**
@@ -73,7 +75,9 @@ function get_post_comments(mysqli $con, int $id)
         u.avatar_url as avatar_url,
         u.login as login,
         c.created_at as created_at,
-        c.content as content 
+        c.content as content, 
+        c.author_id as author_id,
+        c.id
     FROM comments c
          JOIN users u on u.id = c.author_id
          WHERE post_id=?';
@@ -83,9 +87,9 @@ function get_post_comments(mysqli $con, int $id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить данные о посте');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -105,9 +109,9 @@ function get_posts_count_by_author(mysqli $con, string $author_id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить количество подписчиков');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result)['count'];
     }
-    return mysqli_fetch_assoc($result)['count'];
 }
 
 /**
@@ -136,7 +140,8 @@ function get_posts_by_subscription(mysqli $con, array $params)
        p.video_url,
        p.created_at,
        (SELECT COUNT(l.id) FROM likes l WHERE p.id = l.post_id) AS likes_count,
-       (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count
+       (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count,
+       (SELECT COUNT(p2.original_post_id) FROM posts p2 WHERE p.id = p2.original_post_id) AS repost_count
         FROM subscriptions s
                  JOIN posts p on p.author_id = s.author_id
                  JOIN users u on p.author_id = u.id
@@ -153,9 +158,9 @@ function get_posts_by_subscription(mysqli $con, array $params)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -186,9 +191,9 @@ function get_posts(mysqli $con, array $params)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -211,9 +216,9 @@ function get_posts_count(mysqli $con, ?string $post_type)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result)['count'];
     }
-    return mysqli_fetch_assoc($result)['count'];
 }
 
 /**
@@ -232,7 +237,10 @@ function save_post(mysqli $con, array $post_data)
     video_url=?,
     text=?,
     author_quote=?,
-    url=?';
+    url=?,
+    repost=?,
+    original_author_id=?,
+    original_post_id=?';
 
     $stmt = db_get_prepare_stmt($con, $sql, [
         $post_data['content_type_id'],
@@ -243,6 +251,9 @@ function save_post(mysqli $con, array $post_data)
         $post_data['text'] ?? null,
         $post_data['author_quote'] ?? null,
         $post_data['url'] ?? null,
+        $post_data['repost'] ?? null,
+        $post_data['original_author_id'] ?? null,
+        $post_data['original_post_id'] ?? null,
     ]);
     mysqli_stmt_execute($stmt);
 
@@ -265,7 +276,6 @@ function search_posts(mysqli $con, string $text = '')
         $res = mysqli_query($con, $sql);
         if (!$res) {
             show_query_error($con, 'Не удалось получить список постов');
-            return;
         }
     } else {
         $sql = SQL_POST_TEMPLATE . ' WHERE MATCH(p.title, p.text) AGAINST(?)';
@@ -276,9 +286,47 @@ function search_posts(mysqli $con, string $text = '')
         $res = mysqli_stmt_get_result($stmt);
         if (!$res) {
             show_query_error($con, 'Не удалось получить список постов');
-            return;
         }
     }
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Поиск постов по тегу
+ * @param mysqli $con Ресурс соединения
+ * @param string $text хештег
+ * @return array
+ */
+function search_posts_by_tag(mysqli $con, string $hashtag = '')
+{
+    $sql = 'SELECT p.title,
+       p.id,
+       t.icon_class AS type,
+       u.login AS user_name,
+       u.avatar_url AS avatar,
+       p.views,
+       p.image_url,
+       p.text,
+       p.url,
+       p.author_id,
+       p.author_quote,
+       p.video_url,
+       p.created_at,
+       (SELECT COUNT(l.id) FROM likes l WHERE p.id = l.post_id) AS likes_count,
+       (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count
+        FROM hashtags h
+                JOIN post_hashtags ph on ph.hashtag_id = h.id
+                JOIN posts p on p.id = ph.post_id
+                JOIN users u on p.author_id = u.id
+                JOIN types t on p.content_type_id = t.id
+        WHERE h.name = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'name' => $hashtag,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
@@ -423,4 +471,17 @@ function add_tag_to_post(mysqli $con, int $tag_id, int $post_id)
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_insert_id($con);
+}
+
+/**
+ * Просмотр поста
+ * @param mysqli $con Ресурс соединения
+ * @param int $post_id ID поста
+ */
+function increment_post_view(mysqli $con, int $post_id)
+{
+    $sql = 'UPDATE posts SET views = views + 1
+            WHERE id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$post_id]);
+    mysqli_stmt_execute($stmt);
 }

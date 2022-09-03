@@ -45,6 +45,9 @@
                                     </a>
                                 </header>
                                 <div class="post__main">
+                                    <h2>
+                                        <a href="post.php?id=<?= $post['id'] ?>"><?= $post['title'] ?></a>
+                                    </h2>
                                     <?php print($post['template']) ?>
                                 </div>
                                 <footer class="post__footer post__indicators">
@@ -65,6 +68,16 @@
                                             </svg>
                                             <span><?= $post['likes_count'] ?></span>
                                             <span class="visually-hidden">количество лайков</span>
+                                        </a>
+                                        <a class="post__indicator post__indicator--repost button"
+                                           href="repost.php?id=<?= $post['id'] ?>"
+                                           title="Репост">
+                                            <svg class="post__indicator-icon"
+                                                 width="19" height="17">
+                                                <use xlink:href="#icon-repost"></use>
+                                            </svg>
+                                            <span><?= $post['repost_count'] ?></span>
+                                            <span class="visually-hidden">количество репостов</span>
                                         </a>
                                         <a class="post__indicator post__indicator--comments button"
                                            href="/post.php?id=<?= $post['id'] ?>"
