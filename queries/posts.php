@@ -33,9 +33,9 @@ function get_post_types($con)
     $result = mysqli_query($con, 'SELECT * FROM types');
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить типы постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 
@@ -58,9 +58,9 @@ function get_post(mysqli $con, int $id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить данные о посте');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result);
     }
-    return mysqli_fetch_assoc($result);
 }
 
 /**
@@ -87,9 +87,9 @@ function get_post_comments(mysqli $con, int $id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить данные о посте');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -109,9 +109,9 @@ function get_posts_count_by_author(mysqli $con, string $author_id)
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
         show_query_error($con, 'Не удалось загрузить количество подписчиков');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result)['count'];
     }
-    return mysqli_fetch_assoc($result)['count'];
 }
 
 /**
@@ -158,9 +158,9 @@ function get_posts_by_subscription(mysqli $con, array $params)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -191,9 +191,9 @@ function get_posts(mysqli $con, array $params)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -216,9 +216,9 @@ function get_posts_count(mysqli $con, ?string $post_type)
 
     if (!$result) {
         show_query_error($con, 'Не удалось получить список постов');
-        return;
+    } else {
+        return mysqli_fetch_assoc($result)['count'];
     }
-    return mysqli_fetch_assoc($result)['count'];
 }
 
 /**
@@ -276,7 +276,6 @@ function search_posts(mysqli $con, string $text = '')
         $res = mysqli_query($con, $sql);
         if (!$res) {
             show_query_error($con, 'Не удалось получить список постов');
-            return;
         }
     } else {
         $sql = SQL_POST_TEMPLATE . ' WHERE MATCH(p.title, p.text) AGAINST(?)';
@@ -287,7 +286,6 @@ function search_posts(mysqli $con, string $text = '')
         $res = mysqli_stmt_get_result($stmt);
         if (!$res) {
             show_query_error($con, 'Не удалось получить список постов');
-            return;
         }
     }
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
