@@ -191,7 +191,7 @@
                             <a class="header__profile-link" href="#">
                                 <div class="header__avatar-wrapper">
                                     <img class="header__profile-avatar"
-                                         src="<?= $_SESSION['user']['avatar_url'] ?? './img/userpic.jpg' ?>"
+                                         src="<?= $_SESSION['user']['avatar_url'] ?? 'img/anonymous.png' ?>"
                                          alt="Аватар профиля">
                                 </div>
                                 <div class="header__profile-name">
