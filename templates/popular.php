@@ -99,9 +99,7 @@
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
                                         <img class="post__author-avatar"
-                                             src="<?= htmlspecialchars(
-                                                 $post['avatar']
-                                             ) ?>"
+                                             src="<?= $post['avatar'] ?? 'img/anonymous.png' ?>"
                                              alt="Аватар пользователя">
                                     </div>
                                     <div class="post__info">

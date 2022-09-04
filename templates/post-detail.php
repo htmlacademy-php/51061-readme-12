@@ -10,7 +10,6 @@ $title = htmlspecialchars($post['title']);
 $content = htmlspecialchars($post['content']);
 $type = htmlspecialchars($post['type']);
 
-$avatar_url = htmlspecialchars($author_info['avatar_url']);
 $login = htmlspecialchars($author_info['login']);
 $posts_count = htmlspecialchars($author_info['posts_count']);
 $subscribers_count = htmlspecialchars($author_info['subscribers_count']);
@@ -80,7 +79,7 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                             </a>
 
                         </div>
-                        <span class="post__view"><?= $post['views'] . " " ?><?php
+                        <span class="post__view"><?= $post['views'] . ' ' ?><?php
                             print(get_noun_plural_form(
                                 $post['views'],
                                 'просмотр',
@@ -101,7 +100,7 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                               method="post">
                             <div class="comments__my-avatar">
                                 <img class="comments__picture"
-                                     src=" <?= $_SESSION['user']['avatar_url'] ?> "
+                                     src=" <?= $_SESSION['user']['avatar_url'] ?? 'img/anonymous.png' ?> "
                                      alt=" Аватар пользователя">
                             </div>
                             <div
@@ -142,7 +141,7 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                                             <a class="user__avatar-link"
                                                href="/profile.php?id=<?= $comment['author_id'] ?>">
                                                 <img class="comments__picture"
-                                                     src="<?= $comment['avatar_url'] ?>"
+                                                     src="<?= $comment['avatar_url'] ?? 'img/anonymous.png' ?>"
                                                      alt="Аватар пользователя">
                                             </a>
                                         </div>
@@ -175,7 +174,7 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                             <a class="post-details__avatar-link user__avatar-link"
                                href="/profile.php?id=<?= $author_info['id'] ?>">
                                 <img class="post-details__picture user__picture"
-                                     src="<?= $avatar_url ?>"
+                                     src="<?= $author_info['avatar_url'] ?? 'img/anonymous.png' ?>"
                                      alt="Аватар пользователя">
                             </a>
                         </div>

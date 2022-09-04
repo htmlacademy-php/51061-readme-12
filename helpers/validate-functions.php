@@ -242,18 +242,6 @@ function validate_hashtag($value)
         if (count(array_unique($hashtags)) < count($hashtags)) {
             return 'Указаны одинаковые хештеги';
         }
-
-        foreach ($hashtags as $hashtag) {
-            if (substr($hashtag, 0, 1) !== '#') {
-                return 'Хэштег должен начинаться со знака решетки';
-            }
-            if (strrpos($hashtag, '#') > 0) {
-                return 'Хэш-теги разделяются пробелами';
-            }
-            if (strlen($hashtag) < 2) {
-                return 'Хэш-тег не может состоять только из знака решетки';
-            }
-        }
     }
 }
 

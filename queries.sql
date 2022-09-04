@@ -23,22 +23,22 @@ INSERT INTO users
 SET email='larisa@gmail.com',
     login='Лариса',
     password='larisa123',
-    avatar_url='userpic-larisa.jpg';#1
+    avatar_url='img/userpic-larisa.jpg';#1
 INSERT INTO users
 SET email='petro@gmail.com',
     login='Петя',
     password='petro123',
-    avatar_url='userpic-petro.jpg';#2
+    avatar_url='img/userpic-petro.jpg';#2
 INSERT INTO users
 SET email='tanya@gmail.com',
     login='Таня',
     password='tanya123',
-    avatar_url='userpic-tanya.jpg';#3
+    avatar_url='img/userpic-tanya.jpg';#3
 INSERT INTO users
 SET email='mark@gmail.com',
     login='Марк',
     password='mark123',
-    avatar_url='userpic-mark.jpg';
+    avatar_url='img/userpic-mark.jpg';
 #4
 
 # существующий список постов.
@@ -61,12 +61,12 @@ INSERT INTO posts
 SET content_type_id=1,
     author_id=4,
     title='Наконец, обработал фотки!',
-    image_url='rock-medium.jpg';#4
+    image_url='img/rock-medium.jpg';#4
 INSERT INTO posts
 SET content_type_id=1,
     author_id=1,
     title='Моя мечта',
-    image_url='coast-medium.jpg';#5
+    image_url='img/coast-medium.jpg';#5
 INSERT INTO posts
 SET title='Лучшие курсы',
     content_type_id=5,

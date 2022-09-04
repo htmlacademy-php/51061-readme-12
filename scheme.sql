@@ -24,8 +24,8 @@ CREATE TABLE users
     email      VARCHAR(320)                   NOT NULL UNIQUE,
     login      VARCHAR(128)                   NOT NULL UNIQUE,
     password   VARCHAR(100)                   NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT NOW(),
+    update_at  DATETIME DEFAULT NOW() ON UPDATE NOW(),
     avatar_url VARCHAR(2048)
 );
 /**
@@ -41,7 +41,7 @@ CREATE TABLE users
 CREATE TABLE messages
 (
     id           INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at   DATETIME DEFAULT NOW(),
     content      TEXT                           NOT NULL,
     sender_id    INT,
     recipient_id INT,
@@ -81,18 +81,18 @@ CREATE TABLE types
 CREATE TABLE posts
 (
     id                 INT AUTO_INCREMENT PRIMARY KEY,
-    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at         DATETIME DEFAULT NOW(),
+    update_at          DATETIME DEFAULT NOW() ON UPDATE NOW(),
     title              VARCHAR(255) NOT NULL,
     text               TEXT,
     author_quote       VARCHAR(100),
     image_url          VARCHAR(2048),
     video_url          VARCHAR(2048),
     url                VARCHAR(2048),
-    views              INT       DEFAULT 0,
+    views              INT      DEFAULT 0,
     author_id          INT,
     content_type_id    INT,
-    repost             BOOLEAN   DEFAULT false,
+    repost             BOOLEAN  DEFAULT false,
     original_author_id INT          NULL,
     original_post_id   INT          NULL,
     FOREIGN KEY (author_id) REFERENCES users (id),
@@ -113,8 +113,8 @@ CREATE TABLE posts
 CREATE TABLE comments
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT NOW(),
+    update_at  DATETIME DEFAULT NOW() ON UPDATE NOW(),
     content    TEXT,
     author_id  INT,
     post_id    INT,
@@ -158,8 +158,8 @@ CREATE TABLE subscriptions
 CREATE TABLE hashtags
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT NOW(),
+    update_at  DATETIME DEFAULT NOW() ON UPDATE NOW(),
     name       VARCHAR(100) UNIQUE
 );
 

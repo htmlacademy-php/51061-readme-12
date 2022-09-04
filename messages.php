@@ -16,13 +16,13 @@ if (!$is_auth) {
 
 
 $active_user = null;
+$no_dialogs = null;
+$message_error = null;
 $dialog = [];
 $communications = get_user_communications(
         $con,
         $_SESSION['user']['id']
     ) ?? [];
-var_dump($communications);
-var_dump($_SESSION['user']['id']);
 
 if (isset($_GET['user_id'])) {
     $has_communication_with_user = array_search(
@@ -35,8 +35,10 @@ if (isset($_GET['user_id'])) {
     } else {
         $active_user = $communications[$has_communication_with_user];
     }
-} else {
+} elseif (!empty($communications)) {
     $active_user = $communications[0];
+} else {
+    $no_dialogs = true;
 }
 
 if (isset($active_user)) {
@@ -48,14 +50,19 @@ if (isset($active_user)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message'])) {
-    $message_id = sent_message(
-        $con,
-        $_SESSION['user']['id'],
-        $active_user['id'],
-        $_POST['message']
-    );
-    if ($message_id) {
-        header('Location: /messages.php?user_id=' . $active_user['id']);
+    $message = trim($_POST['message']);
+    if ($message) {
+        $message_id = sent_message(
+            $con,
+            $_SESSION['user']['id'],
+            $active_user['id'],
+            $_POST['message']
+        );
+        if ($message_id) {
+            header('Location: /messages.php?user_id=' . $active_user['id']);
+        }
+    } else {
+        $message_error = true;
     }
 }
 
@@ -65,7 +72,9 @@ $content = include_template(
     compact(
         'communications',
         'active_user',
-        'dialog'
+        'dialog',
+        'message_error',
+        'no_dialogs'
     )
 );
 

@@ -29,9 +29,7 @@
                                     <div class="post__avatar-wrapper">
                                         <!--укажите путь к файлу аватара-->
                                         <img class="post__author-avatar"
-                                             src="<?= htmlspecialchars(
-                                                 $post['avatar']
-                                             ) ?? '/img/userpic.jpg' ?>"
+                                             src="<?= $post['avatar'] ?? 'img/anonymous.png' ?>"
                                              alt="Аватар пользователя">
                                     </div>
                                     <div class="post__info">
@@ -88,14 +86,14 @@
                                             <span class="visually-hidden">количество лайков</span>
                                         </a>
                                         <a class="post__indicator post__indicator--comments button"
-                                           href="#"
+                                           href="/post.php?id=<?= $post['id'] ?>"
                                            title="Комментарии">
                                             <svg class="post__indicator-icon"
                                                  width="19" height="17">
                                                 <use
                                                         xlink:href="#icon-comment"></use>
                                             </svg>
-                                            <span>0</span>
+                                            <span><?= $post['comments_count'] ?></span>
                                             <span class="visually-hidden">количество комментариев</span>
                                         </a>
                                     </div>
