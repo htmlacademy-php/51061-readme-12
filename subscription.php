@@ -2,6 +2,7 @@
 /**
  * @var $con mysqli
  * @var $current_time string
+ * @var $referer string
  * @var $user_name string
  * @var $is_auth bool
  * @var $send_email - функция отправки email
@@ -16,14 +17,14 @@ $user = get_user_by_id($con, $get_param_user_id);
 if ($_GET['has_subscription'] === 'true') {
     unsubscribe_to_user(
         $con,
-        $get_param_user_id,
-        $_SESSION['user']['id']
+        $_SESSION['user']['id'],
+        $get_param_user_id
     );
 } else {
     subscribe_to_user(
         $con,
+        $_SESSION['user']['id'],
         $get_param_user_id,
-        $_SESSION['user']['id']
     );
     $message = [
         'to' => $user['email'],
@@ -33,5 +34,6 @@ if ($_GET['has_subscription'] === 'true') {
     $send_email($message);
 }
 
-header('Location:' . $_SERVER['HTTP_REFERER']);
+
+header('Location:' . $referer);
 

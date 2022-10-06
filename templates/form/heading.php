@@ -22,7 +22,7 @@
                 class="adding-post__input form__input"
                 id="heading" type="text"
                 name="heading"
-                value="<?= $value ?>"
+                value="<?= htmlspecialchars($value) ?>"
                 placeholder="Введите заголовок">
         <button
                 class="form__error-button button"

@@ -130,9 +130,10 @@ CREATE TABLE comments
 */
 CREATE TABLE likes
 (
-    id        INT AUTO_INCREMENT PRIMARY KEY,
-    author_id INT,
-    post_id   INT,
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    author_id  INT,
+    post_id    INT,
+    created_at DATETIME DEFAULT NOW(),
     FOREIGN KEY (author_id) REFERENCES users (id),
     FOREIGN KEY (post_id) REFERENCES posts (id)
 );

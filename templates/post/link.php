@@ -17,7 +17,7 @@
                      alt="Иконка">
             </div>
             <div class="post-link__info">
-                <h3><?= htmlspecialchars($title) ?></h3>s
+                <h3><?= htmlspecialchars($title) ?></h3>
                 <span><?= htmlspecialchars($content) ?></span>
             </div>
         </div>

@@ -22,7 +22,7 @@
                 class="adding-post__input form__input"
                 id="video-url" type="text"
                 name="video-url"
-                value="<?= $value ?>"
+                value="<?= htmlspecialchars($value) ?>"
                 placeholder="Введите ссылку">
         <button
                 class="form__error-button button"

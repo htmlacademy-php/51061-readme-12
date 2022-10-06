@@ -141,7 +141,9 @@
                 <div class="authorization__input-wrapper form__input-wrapper">
                     <div class="form__input-section <?= $errors['login'] ? 'form__input-section--error' : '' ?>">
                         <input class="authorization__input authorization__input--login form__input"
-                               value="<?= $_POST['login'] ?? '' ?>"
+                               value="<?= htmlspecialchars(
+                                   $_POST['login'] ?? ""
+                               ) ?? '' ?>"
                                type="text" name="login" placeholder="Логин">
                         <svg class="form__input-icon" width="19" height="18">
                             <use xlink:href="#icon-input-user"></use>
@@ -156,7 +158,9 @@
                         <input class="authorization__input authorization__input--password form__input "
                                type="password" name="password"
                                placeholder="Пароль"
-                               value="<?= $_POST['password'] ?? '' ?>">
+                               value="<?= htmlspecialchars(
+                                   $_POST['password'] ?? ""
+                               ) ?? '' ?>">
                         <svg class="form__input-icon" width="16" height="20">
                             <use xlink:href="#icon-input-password"></use>
                         </svg>

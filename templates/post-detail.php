@@ -7,19 +7,18 @@
  * @var $has_subscription bool
  */
 $title = htmlspecialchars($post['title']);
-$content = htmlspecialchars($post['content']);
-$type = htmlspecialchars($post['type']);
+$type = $post['type'];
 
 $login = htmlspecialchars($author_info['login']);
-$posts_count = htmlspecialchars($author_info['posts_count']);
-$subscribers_count = htmlspecialchars($author_info['subscribers_count']);
+$posts_count = $author_info['posts_count'];
+$subscribers_count = $author_info['subscribers_count'];
 $is_current_user = $_SESSION['user']['id'] == $post['author_id'];
 $last_comment_id = end($post['comments'])['id'] ?? null;
 
 ?>
 <main class="page__main page__main--publication">
     <div class="container">
-        <h1 class="page__title page__title--publication"><?= $title; ?></h1>
+        <h1 class="page__title page__title--publication"><?= $title ?></h1>
         <section class="post-details">
             <h2 class="visually-hidden">Публикация</h2>
             <div class="post-details__wrapper <?= $type ?>">
@@ -29,7 +28,6 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                             <?= $post['template'] ?>
                         </div>
                     </div>
-
 
                     <div class="post__indicators">
                         <div class="post__buttons">
@@ -90,7 +88,9 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                     <ul class="post__tags">
                         <?php foreach ($post['hashtags'] as $hashtag) : ?>
                             <li>
-                                <a href="search.php?search=%23<?= $hashtag ?>"><?= $hashtag ?></a>
+                                <a href="search.php?search=%23<?= htmlspecialchars(
+                                    $hashtag
+                                ) ?>"><?= htmlspecialchars($hashtag) ?></a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -108,8 +108,10 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                                 <textarea
                                         class="comments__textarea form__textarea form__input"
                                         name="comment"
-                                        placeholder="Ваш комментарий"><?= get_post_val(
-                                        'comment'
+                                        placeholder="Ваш комментарий"><?= htmlspecialchars(
+                                        get_post_val(
+                                            'comment'
+                                        )
                                     ) ?></textarea>
                                 <label class="visually-hidden">Ваш
                                     комментарий</label>
@@ -150,7 +152,9 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                                             <div class="comments__name-wrapper">
                                                 <a class="comments__user-name"
                                                    href="/profile.php?id=<?= $comment['author_id'] ?>">
-                                                    <span><?= $comment['login'] ?></span>
+                                                    <span><?= htmlspecialchars(
+                                                            $comment['login']
+                                                        ) ?></span>
                                                 </a>
                                                 <time class="comments__time"
                                                       datetime="<?= $comment['created_at'] ?>"><?= get_passed_time_title(
@@ -159,7 +163,9 @@ $last_comment_id = end($post['comments'])['id'] ?? null;
                                                 </time>
                                             </div>
                                             <p class="comments__text">
-                                                <?= $comment['content'] ?>
+                                                <?= htmlspecialchars(
+                                                    $comment['content']
+                                                ) ?>
                                             </p>
                                         </div>
                                     </li>

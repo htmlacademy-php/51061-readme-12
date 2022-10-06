@@ -9,6 +9,6 @@
 function show_query_error($con, $description)
 {
     $error = mysqli_error($con);
-    print($description . $error);
+    print(htmlspecialchars($description) . htmlspecialchars($error));
 }
 

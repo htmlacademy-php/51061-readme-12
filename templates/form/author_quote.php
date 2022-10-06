@@ -24,7 +24,7 @@
     <input
             class="adding-post__input form__input"
             id="author_quote" type="text"
-            value="<?= $value ?>"
+            value="<?= htmlspecialchars($value) ?>"
             name="author_quote">
     <button
             class="form__error-button button"

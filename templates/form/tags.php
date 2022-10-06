@@ -20,7 +20,7 @@
                 class="adding-post__input form__input"
                 id="tags" type="text"
                 name="tags"
-                value="<?= $value ?>"
+                value="<?= htmlspecialchars($value) ?>"
                 placeholder="Введите теги">
         <button
                 class="form__error-button button"

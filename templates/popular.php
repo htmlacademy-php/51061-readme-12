@@ -4,11 +4,22 @@
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
  * @var $current_post_type string
+ * @var $current_url string
  * @var $prev_page_url string
  * @var $next_page_url string
+ * @var $new_sort_link_views string
+ * @var $new_sort_link_likes string
+ * @var $new_sort_link_created_at string
+ * @var $order string
  * @var $is_last_page bool
  * @var $is_first_page bool
+ * @var $has_url_params bool
  */
+
+$is_sort_active = strpos(
+    $current_url,
+    'sort'
+);
 
 ?>
 
@@ -22,25 +33,73 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
+                        <?php
+                        $is_active = strpos(
+                            $current_url,
+                            'sort=views'
+                        );
+                        $sort_link = $is_sort_active ?
+                            $new_sort_link_views
+                            : $current_url . ($has_url_params ? '&' : '?') . 'sort=views&order=asc';
+                        ?>
+                        <a class="sorting__link <?= $is_active ? 'sorting__link--active' : '' ?>"
+                           href="<?= $sort_link ?>"
+                        >
                             <span>Популярность</span>
-                            <svg class="sorting__icon" width="10" height="12">
+                            <svg
+                                <?php if ($is_active && $order != 'desc'): ?>
+                                    style="transform: rotate(180deg)"
+                                <?php endif; ?>
+                                    class="sorting__icon" width="10"
+                                    height="12">
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
                         </a>
                     </li>
-                    <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                    <li class="sorting__item sorting__item--likes">
+                        <?php
+                        $is_active = strpos(
+                            $current_url,
+                            'sort=likes_count'
+                        );
+                        $sort_link = $is_sort_active ?
+                            $new_sort_link_likes
+                            : $current_url . ($has_url_params ? '&' : '?') . 'sort=likes_count&order=asc';
+
+                        ?>
+                        <a class="sorting__link <?= $is_active ? 'sorting__link--active' : '' ?>"
+                           href="<?= $sort_link ?>"
+                        >
                             <span>Лайки</span>
-                            <svg class="sorting__icon" width="10" height="12">
+                            <svg class="sorting__icon" width="10" height="12"
+                                <?php if ($is_active && $order != 'desc'): ?>
+                                    style="transform: rotate(180deg)"
+                                <?php endif; ?>
+                            >
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <?php
+                        $is_active = strpos(
+                            $current_url,
+                            'sort=created_at'
+                        );
+                        $sort_link = $is_sort_active ?
+                            $new_sort_link_created_at
+                            : $current_url . ($has_url_params ? '&' : '?') . 'sort=created_at&order=asc';
+
+                        ?>
+                        <a class="sorting__link <?= $is_active ? 'sorting__link--active' : '' ?>"
+                           href="<?= $sort_link ?>">
                             <span>Дата</span>
-                            <svg class="sorting__icon" width="10" height="12">
+                            <svg
+                                <?php if ($is_active && $order != 'desc'): ?>
+                                    style="transform: rotate(180deg)"
+                                <?php endif; ?>
+                                    class="sorting__icon" width="10"
+                                    height="12">
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
                         </a>

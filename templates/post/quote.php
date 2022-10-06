@@ -2,8 +2,7 @@
 
 /**
  * @var $content string
- * @var $title string
- * @var $id string
+ * @var $author string
  */
 
 ?>
@@ -13,6 +12,6 @@
         <p>
             <?= htmlspecialchars($content) ?>
         </p>
-        <cite>Неизвестный Автор</cite>
+        <cite><?= htmlspecialchars($author) ?></cite>
     </blockquote>
 </div>

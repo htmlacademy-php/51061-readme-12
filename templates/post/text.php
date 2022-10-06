@@ -11,7 +11,7 @@
 
 <?php if (isset($full_mode)): ?>
     <p>
-        <?= $content; ?>
+        <?= htmlspecialchars($content); ?>
     </p>
 <?php else: ?>
     <?php print(short_content(htmlspecialchars($content))) ?>

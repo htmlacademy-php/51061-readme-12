@@ -30,12 +30,14 @@
                                 </div>
                                 <div class="messages__info">
                   <span class="messages__contact-name">
-                   <?= $communication['login'] ?>
+                   <?= htmlspecialchars($communication['login']) ?>
                   </span>
                                     <?php if (isset($communication['content'])) : ?>
                                         <div class="messages__preview">
                                             <p class="messages__preview-text">
-                                                <?= $communication['content'] ?>
+                                                <?= htmlspecialchars(
+                                                    $communication['content']
+                                                ) ?>
                                             </p>
                                             <time class="messages__preview-time"
                                                   datetime="<?= $communication['created_at'] ?>">
@@ -71,7 +73,7 @@
                                         <?php $login = $is_my_message ? $_SESSION['user']['login'] : $active_user['login']; ?>
                                         <a class="messages__author"
                                            href="/profile?id=<?= $message['sender_id'] ?>">
-                                            <?= $login ?>
+                                            <?= htmlspecialchars($login) ?>
                                         </a>
                                         <time class="messages__time"
                                               datetime="<?= $message['created_at'] ?>">
@@ -82,7 +84,7 @@
                                     </div>
                                 </div>
                                 <p class="messages__text">
-                                    <?= $message['content'] ?>
+                                    <?= htmlspecialchars($message['content']) ?>
                                 </p>
                             </li>
                         <?php endforeach; ?>

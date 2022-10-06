@@ -60,7 +60,7 @@ $error_field_titles = [
                     <section
                             class="adding-post__<?= $current_post_type ?> tabs__content tabs__content--active">
                         <h2>Форма
-                            добавления <?= $current_post_type ?></h2>
+                            добавления</h2>
                         <form class="adding-post__form form"
                               action="/add.php?type=<?= $current_post_type ?>"
                               method="post"
