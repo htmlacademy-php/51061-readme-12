@@ -127,9 +127,9 @@ function create_user(mysqli $con, array $user_data)
  */
 function get_user_subscriptions_count(mysqli $con, int $user_id): int
 {
-    $sql = 'SELECT COUNT(subscription) as total_subscriptions
+    $sql = 'SELECT COUNT(author_id) as total_subscriptions
                     FROM subscriptions
-                    WHERE author_id = ?';
+                    WHERE subscription = ?';
 
     $stmt = db_get_prepare_stmt($con, $sql, [
         'author_id' => $user_id,
@@ -166,6 +166,37 @@ function get_user_subscribers(mysqli $con, int $user_id): array
     }
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
+
+
+/**
+ * Получение подписчиков пользователя
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id - id пользователя
+ * @return array
+ */
+function get_user_subscribers_full_info(mysqli $con, int $user_id): array
+{
+    $sql = 'SELECT u.*,
+                   (SELECT COUNT(p.id) FROM posts p WHERE p.author_id = u.id) as posts_count,
+                    (SELECT COUNT(s2.author_id) FROM subscriptions s2 WHERE s2.subscription = u.id) as subscribers_count,
+                   (SELECT COUNT(s2.author_id) FROM subscriptions s2 WHERE s2.author_id = ? AND s2.subscription = u.id) as has_subscription
+                   FROM subscriptions s
+                    JOIN users u on u.id = s.author_id
+            WHERE s.subscription = ?;';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'id' => $user_id,
+        'id2' => $user_id,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if (!$res) {
+        show_query_error($con, 'Не удалось получить счетчик подписок');
+        return 0;
+    }
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
 
 /**
  * Проверить есть ли подписка на пользователя

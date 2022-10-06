@@ -21,7 +21,7 @@
             class="adding-post__input form__input"
             id="photo-url" type="text"
             name="photo-url"
-            value="<?= $value ?>"
+            value="<?= htmlspecialchars($value) ?>"
             placeholder="Введите ссылку">
     <button
             class="form__error-button button"

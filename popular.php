@@ -8,15 +8,50 @@
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
+
 $title = 'readme: популярное';
 $current_post_type = null;
+$order = null;
+$sort = null;
 
-function add_type_param($url)
+function add_param($url)
 {
-    if (!isset($_GET['type'])) {
-        return $url;
+    $new_url = $url;
+    if (isset($_GET['type'])) {
+        $new_url = $new_url . '&type=' . $_GET['type'];
     }
-    return $url . '&type=' . $_GET['type'];
+    if (isset($_GET['order']) && isset($_GET['sort'])) {
+        $new_url = $new_url . '&sort=' . $_GET['sort'] . '&order=' . $_GET['order'];
+    }
+    return $new_url;
+}
+
+function create_new_sort_link($url, $type)
+{
+    $new_url = $url;
+    $prev_type = '';
+    if (isset($_GET['sort'])) {
+        $prev_type = $_GET['sort'];
+        $new_url = preg_replace(
+            '/sort=(views|likes_count|created_at)/',
+            'sort=' . $type,
+            $new_url
+        );
+    }
+    if (isset($_GET['order'])) {
+        if ($prev_type === $type) {
+            $new_order = $_GET['order'] === 'asc' ? 'desc' : 'asc';
+        } else {
+            $new_order = 'asc';
+        }
+
+        $new_url = preg_replace(
+            '/order=(asc|desc)/',
+            'order=' . $new_order,
+            $new_url
+        );
+    }
+    return $new_url;
 }
 
 if (!$is_auth) {
@@ -26,22 +61,35 @@ if (!$is_auth) {
 if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
 }
+if (isset($_GET['order'])) {
+    $order = $_GET['order'];
+}
+if (isset($_GET['sort'])) {
+    $sort = $_GET['sort'];
+}
+
+$has_url_params = strpos($current_url, '?') != false;
 
 $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $limit = $_GET['limit'] ?? 9;
 $max_page = intval(ceil(get_posts_count($con, $current_post_type) / $limit));
 $is_last_page = $current_page === $max_page;
 $is_first_page = $current_page === 1;
-
 $next_page_url = '/popular.php?page=' . ($current_page + 1);
-$next_page_url = add_type_param($next_page_url);
+$next_page_url = add_param($next_page_url);
 $prev_page_url = '/popular.php?page=' . ($current_page - 1);
-$prev_page_url = add_type_param($current_post_type);
+$prev_page_url = add_param($prev_page_url);
+
+$new_sort_link_views = create_new_sort_link($current_url, 'views');
+$new_sort_link_likes = create_new_sort_link($current_url, 'likes_count');
+$new_sort_link_created_at = create_new_sort_link($current_url, 'created_at');
 
 $post_types = get_post_types($con);
 $posts_data = get_posts($con, [
     'type' => $current_post_type,
     'page' => $current_page,
+    'order' => $order,
+    'sort' => $sort,
     'limit' => $limit
 ]);
 
@@ -54,7 +102,8 @@ $posts = array_map(function ($post_data) {
         [
             'title' => $post['title'],
             'content' => $post['content'],
-            'id' => $post['id']
+            'id' => $post['id'],
+            'author' => $post['author_quote'],
         ]
     );
     return $post;
@@ -74,7 +123,14 @@ $content = include_template(
         'next_page_url',
         'prev_page_url',
         'is_last_page',
-        'is_first_page'
+        'is_first_page',
+        'has_url_params',
+        'current_url',
+        'order',
+        'sort',
+        'new_sort_link_views',
+        'new_sort_link_likes',
+        'new_sort_link_created_at',
     )
 );
 

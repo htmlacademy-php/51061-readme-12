@@ -132,8 +132,12 @@
                 <div class="header__search">
                     <label class="visually-hidden">Поиск</label>
                     <input class="header__search-input form__input"
+                           required
                            type="search" name="search"
-                           value="<?= $_GET['search'] ?? '' ?>">
+                           value="<?= isset($_GET['search']) ?
+                               htmlspecialchars($_GET['search'])
+                               : ''
+                           ?>">
                     <button class="header__search-button button" type="submit">
                         <svg class="header__search-icon" width="18" height="18">
                             <use xlink:href="#icon-search"></use>
@@ -306,15 +310,15 @@
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
                     <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя
+                        <a class="footer__page-link" href="feed.php">Моя
                             лента</a>
                     </li>
                     <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный
+                        <a class="footer__page-link" href="popular.php">Популярный
                             контент</a>
                     </li>
                     <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные
+                        <a class="footer__page-link" href="messages.php">Личные
                             сообщения</a>
                     </li>
                 </ul>

@@ -5,6 +5,7 @@
  * @var $current_time string
  * @var $current_url string
  * @var $user_name string
+ * @var $referer string
  * @var $is_auth bool
  */
 require_once('bootstrap.php');
@@ -29,4 +30,4 @@ if (isset($_GET['post_id'])) {
     }
 }
 
-header('Location:' . $_SERVER[HTTP_REFERER]);
+header('Location:' . $referer);

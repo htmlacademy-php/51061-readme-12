@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user_data['avatar_url'] = save_photo_to_server(
                 $_FILES['userpic-file']
             );
-        };
+        }
 
         $user_id = create_user($con, $user_data);
         if ($user_id) {
@@ -134,7 +134,7 @@ foreach ($fields_config as $key => $field) {
     ]);
 
     $fields[] = $template;
-};
+}
 
 $content = include_template(
     'registration.php',

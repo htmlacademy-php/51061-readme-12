@@ -31,13 +31,15 @@
                                        title="Автор">
                                         <div class="post__avatar-wrapper">
                                             <img class="post__author-avatar"
-                                                 src="<?= $post['avatar'] ?>"
+                                                 src="<?= $post['avatar'] ?? 'img/anonymous.png' ?>"
                                                  alt="Аватар пользователя"
                                                  width="60"
                                                  height="60">
                                         </div>
                                         <div class="post__info">
-                                            <b class="post__author-name"><?= $post['user_name'] ?></b>
+                                            <b class="post__author-name"><?= htmlspecialchars(
+                                                    $post['user_name']
+                                                ) ?></b>
                                             <span class="post__time"><?= get_passed_time_title(
                                                     $post['created_at']
                                                 ) ?></span>
@@ -46,7 +48,9 @@
                                 </header>
                                 <div class="post__main">
                                     <h2>
-                                        <a href="post.php?id=<?= $post['id'] ?>"><?= $post['title'] ?></a>
+                                        <a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars(
+                                                $post['title']
+                                            ) ?></a>
                                     </h2>
                                     <?php print($post['template']) ?>
                                 </div>

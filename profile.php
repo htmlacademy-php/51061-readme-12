@@ -16,47 +16,56 @@ if (!$is_auth) {
 }
 
 $user = '';
+$posts = [];
 $has_subscription = false;
 $get_param_user_id = $_GET['id'] ?? null;
-
+$content_type = $_GET['type'] ?? 'posts';
 
 if ($get_param_user_id) {
     $user = get_user_by_id($con, $get_param_user_id);
 
     $has_subscription = check_subscribe_to_user(
         $con,
-        $get_param_user_id,
-        $_SESSION['user']['id']
+        $_SESSION['user']['id'],
+        $get_param_user_id
     );
 } else {
     $user = $_SESSION['user'];
 }
 
-$posts_data = get_user_posts($con, $user['id']);
-$posts = [];
-$total_posts = count($posts_data);
+$total_subscriptions = get_user_subscriptions_count($con, $user['id']);
+$passed_time = get_passed_time_title($user['created_at']);
+$total_posts = get_posts_count_by_author($con, $user['id']);
 
-if ($total_posts) {
-    foreach ($posts_data as $post_data) {
-        $post = format_post_data($post_data);
-        $template = get_post_template_by_type($post['type']);
+$data = [];
 
-        $post['template'] = include_template(
-            $template,
-            [
-                'title' => $post['title'],
-                'content' => $post['content'],
-                'id' => $post['id']
-            ]
-        );
-        $post['hashtags'] = get_post_hashtags($con, $post['id']);
-        $posts[] = $post;
-    }
+switch ($content_type) {
+    case 'posts':
+        $posts = get_user_posts($con, $user['id']);
+        foreach ($posts as $post_data) {
+            $post = format_post_data($post_data);
+            $template = get_post_template_by_type($post['type']);
+
+            $post['template'] = include_template(
+                $template,
+                [
+                    'title' => $post['title'],
+                    'content' => $post['content'],
+                    'id' => $post['id']
+                ]
+            );
+            $post['hashtags'] = get_post_hashtags($con, $post['id']);
+            $data[] = $post;
+        }
+        break;
+    case 'likes':
+        $data = get_user_posts_with_likes($con, $user['id']);
+        break;
+    case 'subscriptions':
+        $data = get_user_subscribers_full_info($con, $user['id']);
+        break;
 }
 
-$total_subscriptions = get_user_subscriptions_count($con, $user['id']);
-
-$passed_time = get_passed_time_title($user['created_at']);
 
 $content = include_template(
     'profile.php',
@@ -67,8 +76,9 @@ $content = include_template(
         'total_subscriptions',
         'total_posts',
         'has_subscription',
-        'posts',
-        'current_time'
+        'data',
+        'current_time',
+        'content_type'
     )
 );
 

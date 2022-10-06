@@ -22,7 +22,6 @@ if (isset($_GET['type'])) {
     $current_post_type = mysqli_real_escape_string($con, $_GET['type']);
 }
 
-
 foreach ($post_types as $type) {
     $post_types_ids[$type['icon_class']] = $type['id'];
 }

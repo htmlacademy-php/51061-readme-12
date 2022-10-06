@@ -2,7 +2,6 @@
 
 session_start();
 
-
 require_once('vendor/autoload.php');
 
 $dotenv = Dotenv\Dotenv::createImmutable('./');
@@ -12,6 +11,14 @@ require_once('helpers/helpers.php');
 require_once('queries.php');
 require_once('mail.php');
 
+$current_time = date_create()->getTimestamp();
+$current_url = $_SERVER['REQUEST_URI'];
+$referer = $current_url;
+if (isset($_SESSION['referer'])) {
+    $referer = $_SESSION['referer'];
+}
+
+$_SESSION['referer'] = $current_url;
 
 //В сценарии главной страницы выполните подключение к MySQL.
 $con = mysqli_connect(
@@ -32,6 +39,5 @@ if (isset($_SESSION['user'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['login'];
 }
-$current_time = date_create()->getTimestamp();
-$current_url = $_SERVER['REQUEST_URI'];
+
 

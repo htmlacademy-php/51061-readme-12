@@ -20,7 +20,7 @@
         <input
                 class="adding-post__input form__input"
                 id="post-link" type="text"
-                value="<?= $value ?>"
+                value="<?= htmlspecialchars($value) ?>"
                 name="url">
         <button
                 class="form__error-button button"

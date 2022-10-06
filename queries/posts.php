@@ -143,10 +143,10 @@ function get_posts_by_subscription(mysqli $con, array $params)
        (SELECT COUNT(c.id) FROM comments c WHERE p.id = c.post_id) AS comments_count,
        (SELECT COUNT(p2.original_post_id) FROM posts p2 WHERE p.id = p2.original_post_id) AS repost_count
         FROM subscriptions s
-                 JOIN posts p on p.author_id = s.author_id
+                 JOIN posts p on p.author_id = s.subscription
                  JOIN users u on p.author_id = u.id
                  JOIN types t on p.content_type_id = t.id
-        WHERE s.subscription = ' . $current_user_id;
+        WHERE s.author_id = ' . $current_user_id;
 
     if ($post_type) {
         $query = $query . ' AND t.icon_class = "' . $post_type . '" ';
@@ -176,12 +176,17 @@ function get_posts(mysqli $con, array $params)
     $post_type = $params['type'];
     $page = $params['page'];
     $limit = $params['limit'];
+    $sort = $params['sort'];
+    $order = $params['order'];
 
     if ($post_type) {
         $query = $query . ' WHERE t.icon_class = "' . $post_type . '" ';
     }
 
-    $query = $query . ' ORDER BY views ASC ';
+    if ($sort && $order) {
+        $query = $query . ' ORDER BY ' . $sort . ' ' . $order;
+    }
+
 
     if (isset($limit) and isset($page)) {
         $query = $query . ' LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit);
@@ -286,6 +291,7 @@ function search_posts(mysqli $con, string $text = '')
         $res = mysqli_stmt_get_result($stmt);
         if (!$res) {
             show_query_error($con, 'Не удалось получить список постов');
+            return;
         }
     }
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -453,6 +459,45 @@ function get_user_posts(mysqli $con, int $user_id)
         return 0;
     }
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Получение постов с лайками пользователя
+ * @param mysqli $con Ресурс соединения
+ * @param int $user_id ID пользователя
+ * @return array - список постов
+ */
+function get_user_posts_with_likes(mysqli $con, int $user_id)
+{
+    $sql = 'SELECT p.title,
+                   p.id,
+                   t.icon_class                       AS type,
+                   p.content_type_id,
+                   u.login                            AS user_name,
+                   u.avatar_url                       AS avatar,
+                   p.image_url,
+                   p.text,
+                   p.url,
+                   p.author_id,
+                   p.author_quote,
+                   p.video_url,
+                   l.created_at
+            FROM likes l
+                     JOIN posts p on p.id = l.post_id
+                     JOIN users u on u.id = l.author_id
+                     JOIN types t on p.content_type_id = t.id
+            WHERE p.author_id= ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        'author_id' => $user_id,
+    ]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($res) {
+        return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    } else {
+        show_query_error($con, 'Не удалось получить список постов');
+    }
 }
 
 /**
