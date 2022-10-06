@@ -244,7 +244,7 @@
                         <li>
                             <? if (isset($add_post)) : ?>
                                 <a class="header__post-button header__post-button--active button button--transparent"
-                                   href="#">Закрыть</a>
+                                   href="<?= $referer ?>">Закрыть</a>
 
                             <? else : ?>
                                 <a class="header__post-button button button--transparent"

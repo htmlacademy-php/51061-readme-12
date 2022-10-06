@@ -478,7 +478,7 @@ function get_user_posts_with_likes(mysqli $con, int $user_id)
                    p.image_url,
                    p.text,
                    p.url,
-                   p.author_id,
+                   l.author_id,
                    p.author_quote,
                    p.video_url,
                    l.created_at

@@ -29,7 +29,8 @@
                                 $user['login']
                             ) ?></span>
                         <time class="profile__user-time user__time"
-                              datetime="2014-03-20"><?= $passed_time ?> на сайте
+                              datetime="2014-03-20"><?= $passed_time ?>
+                            зарегистрирован
                         </time>
                     </div>
                 </div>
@@ -72,17 +73,17 @@
                     <b class="profile__tabs-caption filters__caption">Показать:</b>
                     <ul class="profile__tabs-list filters__list tabs__list">
                         <li class="profile__tabs-item filters__item">
-                            <a href="?type=posts"
+                            <a href="?id=<?= $user['id'] ?>&type=posts"
                                class="profile__tabs-link filters__button tabs__item <?= $content_type == 'posts' ? 'tabs__item--active filters__button--active' : '' ?> button"
                             >Посты</a>
                         </li>
                         <li class="profile__tabs-item filters__item">
                             <a class="profile__tabs-link filters__button tabs__item <?= $content_type == 'likes' ? 'tabs__item--active filters__button--active' : '' ?>  button"
-                               href="?type=likes">Лайки</a>
+                               href="?id=<?= $user['id'] ?>&type=likes">Лайки</a>
                         </li>
                         <li class="profile__tabs-item filters__item">
                             <a class="profile__tabs-link filters__button tabs__item <?= $content_type == 'subscriptions' ? 'tabs__item--active filters__button--active' : '' ?>  button"
-                               href="?type=subscriptions">Подписки</a>
+                               href="?id=<?= $user['id'] ?>&type=subscriptions">Подписки</a>
                         </li>
                     </ul>
                 </div>
@@ -290,7 +291,7 @@
                                             <time class="post-mini__time user__additional"
                                                   datetime="<?= $item['created_at'] ?>"><?= get_passed_time_title(
                                                     $item['created_at']
-                                                ) ?> на сайте
+                                                ) ?> зарегистрирован
                                             </time>
                                         </div>
                                     </div>
@@ -306,18 +307,20 @@
                                             <span class="post-mini__rating-text user__rating-text">подписчиков</span>
                                         </p>
                                     </div>
-                                    <div class="post-mini__user-buttons user__buttons">
-                                        <a
-                                                href="/subscription.php?user_id=<?= $item['id'] ?>&has_subscription=<?= $item['has_subscription'] ? 'true' : 'false' ?>"
-                                                class="post-mini__user-button user__button user__button--subscription button <?= $item['has_subscription'] ? 'button--quartz' : 'button--main' ?> "
-                                                type="button">
-                                            <?php if ($item['has_subscription']) : ?>
-                                                Отписаться
-                                            <?php else: ?>
-                                                Подписаться
-                                            <?php endif; ?>
-                                        </a>
-                                    </div>
+                                    <?php if ($_SESSION['user']['id'] === $user['id']) : ?>
+                                        <div class="post-mini__user-buttons user__buttons">
+                                            <a
+                                                    href="/subscription.php?user_id=<?= $item['id'] ?>&has_subscription=<?= $item['has_subscription'] ? 'true' : 'false' ?>"
+                                                    class="post-mini__user-button user__button user__button--subscription button <?= $item['has_subscription'] ? 'button--quartz' : 'button--main' ?> "
+                                                    type="button">
+                                                <?php if ($item['has_subscription']) : ?>
+                                                    Отписаться
+                                                <?php else: ?>
+                                                    Подписаться
+                                                <?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <? endif; ?>
                                 </li>
                             <?php endforeach; ?>
                         </ul>

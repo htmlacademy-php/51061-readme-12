@@ -217,16 +217,18 @@ $is_sort_active = strpos(
                 <h2>Публикаций не найдено</h2>
             <?php endif; ?>
         </div>
-        <div class="popular__page-links">
-            <?php if (!$is_first_page) : ?>
-                <a class="popular__page-link popular__page-link--prev button button--gray"
-                   href="<?= $prev_page_url ?>">Предыдущая страница</a>
-            <? endif; ?>
-            <?php if (!$is_last_page) : ?>
-                <a class="popular__page-link popular__page-link--next button button--gray"
-                   href="<?= $next_page_url ?>">Следующая страница</a>
-            <? endif; ?>
-        </div>
+        <?php if (!empty($posts)) : ?>
+            <div class="popular__page-links">
+                <?php if (!$is_first_page) : ?>
+                    <a class="popular__page-link popular__page-link--prev button button--gray"
+                       href="<?= $prev_page_url ?>">Предыдущая страница</a>
+                <? endif; ?>
+                <?php if (!$is_last_page) : ?>
+                    <a class="popular__page-link popular__page-link--next button button--gray"
+                       href="<?= $next_page_url ?>">Следующая страница</a>
+                <? endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
