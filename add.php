@@ -4,6 +4,7 @@
  * @var $con mysqli
  * @var $current_time string
  * @var $user_name string
+ * @var $referer string
  * @var $is_auth bool
  * @var $send_email - функция отправки email
  */
@@ -167,7 +168,8 @@ $content = include_template(
         'post_types',
         'current_post_type',
         'errors',
-        'form_fields'
+        'form_fields',
+        'referer'
     )
 );
 $page = include_template(
@@ -177,7 +179,8 @@ $page = include_template(
         'title',
         'is_auth',
         'user_name',
-        'add_post'
+        'add_post',
+        'referer'
     )
 );
 

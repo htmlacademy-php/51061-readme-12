@@ -7,6 +7,7 @@ require_once('helpers/helpers.php');
  * @var $post_types array{icon_class:string ,title:string}
  * @var $current_time int
  * @var $current_post_type string
+ * @var $referer string
  * @var $errors array
  * @var $form_fields array
  */
@@ -116,7 +117,7 @@ $error_field_titles = [
                             type="submit">Опубликовать
                     </button>
                     <a class="adding-post__close"
-                       href="#">Закрыть</a>
+                       href="<?= $referer ?>">Закрыть</a>
                 </div>
                 </form>
                 </section>

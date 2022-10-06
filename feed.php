@@ -34,6 +34,7 @@ $posts = array_map(function ($post_data) {
         [
             'title' => $post['title'],
             'content' => $post['content'],
+            'author' => $post['author_quote'],
             'id' => $post['id']
         ]
     );

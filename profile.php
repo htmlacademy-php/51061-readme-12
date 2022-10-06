@@ -51,6 +51,7 @@ switch ($content_type) {
                 [
                     'title' => $post['title'],
                     'content' => $post['content'],
+                    'author' => $post['author_quote'],
                     'id' => $post['id']
                 ]
             );

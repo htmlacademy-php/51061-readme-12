@@ -46,7 +46,8 @@ INSERT INTO posts
 SET content_type_id=4,
     author_id=1,
     title='Цитата',
-    author_quote='Мы в жизни любим только раз, а после ищем лишь похожих';#1
+    text='Мы в жизни любим только раз, а после ищем лишь похожих',
+    author_quote='Кто-то';#1
 INSERT INTO posts
 SET content_type_id=3,
     author_id=3,
